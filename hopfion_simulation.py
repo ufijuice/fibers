@@ -1,6 +1,24 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+"""
+This script generates a hopfion crystal, a theoretical topological structure.
+The code is a mathematical model based on a rational map, and does not simulate
+a specific physical system.
+
+Realization in AlGaAs:
+
+The creation of such a topological structure in a physical system is a topic
+of ongoing research. Materials with strong nonlinear optical properties, such
+as AlGaAs, are promising candidates. The high Kerr nonlinearity of AlGaAs could
+be used to create the necessary conditions for the formation of topological
+solitons like hopfions.
+
+However, the exact experimental setup and the correspondence between the
+parameters of this simulation (p, q, lattice_type) and the physical parameters
+of an AlGaAs system would require further theoretical and experimental work.
+"""
+
 def create_hopfion_crystal(p_val, q_val, lattice_type='sc', size=1.0, resolution=100, lattice_constant=1.0):
     """
     Creates a hopfion crystal.
@@ -144,6 +162,9 @@ def visualize_hopfion_crystal(grid, spin_texture, slice_axis='z', slice_index=No
     plt.show()
 
 if __name__ == '__main__':
+    import time
+    start_time = time.time()
+
     # --- Simulation Parameters ---
     P_VALUE = 1
     Q_VALUE = 1
@@ -164,3 +185,16 @@ if __name__ == '__main__':
 
     # --- Visualize Results ---
     visualize_hopfion_crystal(grid, spin_texture, slice_axis='z')
+
+    end_time = time.time()
+    simulation_time = end_time - start_time
+    print(f"Simulation finished in {simulation_time:.2f} seconds.")
+
+    # --- Hardware Time Comparison ---
+    # This simulation models the static structure of a hopfion crystal, which is
+    # a theoretical construct. There is no direct physical process with a
+    # defined "hardware time" to compare against.
+    # The formation of such a structure in a real system would be a dynamic
+    # process, likely on the order of picoseconds to nanoseconds, but this
+    # simulation does not model those dynamics.
+    print("Hardware time comparison is not applicable for this theoretical model.")

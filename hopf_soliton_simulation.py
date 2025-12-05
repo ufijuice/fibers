@@ -1,9 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-def create_hopf_soliton(grid_size=100, beam_waist=1.0, wavelength1=0.8, wavelength2=1.2, k_val=1.0, time=0.0):
+def create_hopf_soliton(grid_size=100, beam_waist=1.0, wavelength1=0.8, wavelength2=1.2, k_val=1.0, time=0.0, n0_algaas=3.3, n2_algaas=1e-17, power=1.0):
     """
-    Simulates the creation of a Hopf soliton using two interfering light beams.
+    Simulates the creation of a Hopf soliton in AlGaAs, including the Kerr effect.
 
     Args:
         grid_size (int): The resolution of the simulation grid.
@@ -12,6 +12,9 @@ def create_hopf_soliton(grid_size=100, beam_waist=1.0, wavelength1=0.8, waveleng
         wavelength2 (float): The wavelength of the second beam.
         k_val (float): The wave vector component.
         time (float): The time at which to evaluate the fields.
+        n0_algaas (float): Linear refractive index of AlGaAs.
+        n2_algaas (float): Nonlinear refractive index (Kerr coefficient) of AlGaAs.
+        power (float): The power of the beams in arbitrary units.
 
     Returns:
         tuple: A tuple containing the grid coordinates (X, Y, Z) and the Stokes parameters (S0, S1, S2, S3).
@@ -22,9 +25,9 @@ def create_hopf_soliton(grid_size=100, beam_waist=1.0, wavelength1=0.8, waveleng
     z = np.linspace(-2, 2, grid_size)
     X, Y, Z = np.meshgrid(x, y, z)
 
-    # Wave numbers
-    k1 = 2 * np.pi / wavelength1
-    k2 = 2 * np.pi / wavelength2
+    # Wave numbers in vacuum
+    k1_vac = 2 * np.pi / wavelength1
+    k2_vac = 2 * np.pi / wavelength2
 
     # Gouy phase
     z_R1 = np.pi * beam_waist**2 / wavelength1
@@ -40,12 +43,22 @@ def create_hopf_soliton(grid_size=100, beam_waist=1.0, wavelength1=0.8, waveleng
     r = np.sqrt(X**2 + Y**2)
 
     # Amplitudes
-    A1 = (beam_waist / w_z1) * np.exp(-r**2 / w_z1**2)
-    A2 = (beam_waist / w_z2) * np.exp(-r**2 / w_z2**2)
+    A1 = np.sqrt(power) * (beam_waist / w_z1) * np.exp(-r**2 / w_z1**2)
+    A2 = np.sqrt(power) * (beam_waist / w_z2) * np.exp(-r**2 / w_z2**2)
 
-    # Electric fields (complex)
-    E1 = A1 * np.exp(1j * (k1 * Z - k1 * time + gouy_phase1))
-    E2 = A2 * np.exp(1j * (k2 * Z - k2 * time + gouy_phase2))
+    # Initial electric fields (complex)
+    E1_initial = A1 * np.exp(1j * (k1_vac * n0_algaas * Z - k1_vac * time + gouy_phase1))
+    E2_initial = A2 * np.exp(1j * (k2_vac * n0_algaas * Z - k2_vac * time + gouy_phase2))
+    
+    # Intensity
+    I = np.abs(E1_initial + E2_initial)**2
+
+    # Nonlinear phase shift
+    nonlinear_phase_shift = (2 * np.pi / wavelength1) * n2_algaas * I * Z
+
+    # Electric fields with Kerr effect
+    E1 = A1 * np.exp(1j * (k1_vac * n0_algaas * Z - k1_vac * time + gouy_phase1 + nonlinear_phase_shift))
+    E2 = A2 * np.exp(1j * (k2_vac * n0_algaas * Z - k2_vac * time + gouy_phase2 + nonlinear_phase_shift))
 
     # Total field
     E_total = E1 + E2
@@ -130,23 +143,48 @@ def visualize_hopf_soliton(grid, stokes_parameters, slice_axis='z', slice_index=
     plt.show()
 
 if __name__ == '__main__':
+    import time
+    start_time = time.time()
+
     # --- Simulation Parameters ---
     GRID_SIZE = 100
     BEAM_WAIST = 1.0
-    WAVELENGTH1 = 0.8
-    WAVELENGTH2 = 1.2
+    WAVELENGTH1 = 1.55  # Micrometers, for AlGaAs
+    WAVELENGTH2 = 1.50  # Micrometers
     K_VAL = 1.0
     TIME = 0.0
     
+    # AlGaAs properties
+    N0_ALGAAS = 3.3
+    N2_ALGAAS = 1e-17  # m^2/W
+    POWER = 1e6  # Adjust for desired nonlinearity
+
     # --- Run Simulation ---
+    print("Simulating the creation of a Hopf soliton in AlGaAs...")
     grid, stokes_parameters = create_hopf_soliton(
         grid_size=GRID_SIZE,
         beam_waist=BEAM_WAIST,
         wavelength1=WAVELENGTH1,
         wavelength2=WAVELENGTH2,
         k_val=K_VAL,
-        time=TIME
+        time=TIME,
+        n0_algaas=N0_ALGAAS,
+        n2_algaas=N2_ALGAAS,
+        power=POWER
     )
 
     # --- Visualize Results ---
     visualize_hopf_soliton(grid, stokes_parameters, slice_axis='z')
+
+    end_time = time.time()
+    simulation_time = end_time - start_time
+    print(f"Simulation finished in {simulation_time:.2f} seconds.")
+
+    # --- Hardware Time Comparison ---
+    # The formation of a soliton is a dynamic process that depends on the
+    # nonlinear response time of the material. For AlGaAs, this response
+    # time is on the order of picoseconds (1e-12 s).
+    # This simulation, however, calculates the steady-state structure of the
+    # soliton, not its formation dynamics.
+    nonlinear_response_time = 1e-12  # seconds
+    print(f"Approximate physical timescale for soliton formation: {nonlinear_response_time:.2e} seconds.")

@@ -26,43 +26,57 @@ def create_hopfion_crystal(p_val, q_val, lattice_type='sc', size=1.0, resolution
 
     k = 2 * np.pi / lattice_constant
 
+    # Define intermediate complex fields based on lattice type
     if lattice_type == 'sc':
         # Wave vectors for simple cubic
         kx = k * X
         ky = k * Y
-        kz = k * Z
-        # Spin texture for simple cubic hopfion crystal
-        S1 = np.cos(kz) * np.sin(ky) * np.cos(kx) - np.sin(kz) * np.cos(ky) * np.sin(kx)
-        S2 = np.cos(kx) * np.sin(kz) * np.cos(ky) - np.sin(kx) * np.cos(kz) * np.sin(ky)
-        S3 = np.cos(ky) * np.sin(kx) * np.cos(kz) - np.sin(ky) * np.cos(kx) * np.sin(kz)
+        # Intermediate fields for simple cubic
+        Z0_base = np.cos(kx) + 1j * np.sin(kx)
+        Z1_base = np.cos(ky) + 1j * np.sin(ky)
 
     elif lattice_type == 'bcc':
         # Wave vectors for body-centered cubic
         k1 = k * (Y + Z)
         k2 = k * (X + Z)
-        k3 = k * (X + Y)
-        # Spin texture for body-centered cubic hopfion crystal
-        S1 = np.cos(k1) * np.sin(k2) * np.cos(k3) - np.sin(k1) * np.cos(k2) * np.sin(k3)
-        S2 = np.cos(k2) * np.sin(k3) * np.cos(k1) - np.sin(k2) * np.cos(k3) * np.sin(k1)
-        S3 = np.cos(k3) * np.sin(k1) * np.cos(k2) - np.sin(k3) * np.cos(k1) * np.sin(k2)
+        # Intermediate fields for body-centered cubic
+        Z0_base = np.cos(k1) + 1j * np.sin(k1)
+        Z1_base = np.cos(k2) + 1j * np.sin(k2)
 
     elif lattice_type == 'fcc':
         # Wave vectors for face-centered cubic
         k1 = k * (X + Y - Z)
         k2 = k * (X - Y + Z)
-        k3 = k * (-X + Y + Z)
-        # Spin texture for face-centered cubic hopfion crystal
-        S1 = np.cos(k1) * np.sin(k2) * np.cos(k3) - np.sin(k1) * np.cos(k2) * np.sin(k3)
-        S2 = np.cos(k2) * np.sin(k3) * np.cos(k1) - np.sin(k2) * np.cos(k3) * np.sin(k1)
-        S3 = np.cos(k3) * np.sin(k1) * np.cos(k2) - np.sin(k3) * np.cos(k1) * np.sin(k2)
+        # Intermediate fields for face-centered cubic
+        Z0_base = np.cos(k1) + 1j * np.sin(k1)
+        Z1_base = np.cos(k2) + 1j * np.sin(k2)
 
     else:
-        # Placeholder for other lattice types
+        print(f"Lattice type '{lattice_type}' is not yet implemented.")
+        # Return a uniform spin texture
         S1 = np.zeros_like(X)
         S2 = np.zeros_like(X)
         S3 = np.ones_like(X)
-        print(f"Lattice type '{lattice_type}' is not yet implemented.")
+        return (X, Y, Z), (S1, S2, S3)
 
+    # Apply the rational map powers
+    Z0 = Z0_base ** q_val
+    Z1 = Z1_base ** p_val
+
+    # Normalize the complex fields
+    norm = np.sqrt(np.abs(Z0)**2 + np.abs(Z1)**2)
+    # Avoid division by zero
+    norm[norm == 0] = 1
+    Z0 /= norm
+    Z1 /= norm
+
+    # Calculate the spin texture from the normalized complex fields
+    # S_x = 2 * Re(Z1 * conj(Z0))
+    # S_y = 2 * Im(Z1 * conj(Z0))
+    # S_z = |Z0|^2 - |Z1|^2
+    S1 = 2 * (Z1.real * Z0.real + Z1.imag * Z0.imag)
+    S2 = 2 * (Z1.imag * Z0.real - Z1.real * Z0.imag)
+    S3 = np.abs(Z0)**2 - np.abs(Z1)**2
 
     return (X, Y, Z), (S1, S2, S3)
 

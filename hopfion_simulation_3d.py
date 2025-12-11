@@ -7,7 +7,7 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import matplotlib.colors as colors
 from scipy.ndimage import map_coordinates
 
-# --- Core Simulation Function (Not used in this version, but kept for reference) ---
+# --- Core Simulation Function ---
 def run_vnlse_simulation(initial_field_x, initial_field_y, dx, dy, dz, num_steps, k, k0, n2):
     """
     Solves the 3D Vector NLSE (simplified).
@@ -133,10 +133,11 @@ def visualize_initial_hopfion_2d_slices(field_x, field_y, grid_size, title="Init
     plt.show()
 
 
-def visualize_3d_intensity(field_x, field_y, grid_size, title="3D Intensity Isosurface with Polarization", isolevel_fraction=0.5):
+def visualize_3d_intensity(field_x, field_y, grid_size, sim_params, title="3D Intensity Isosurface with Polarization", isolevel_fraction=0.5):
     """
     Visualizes a 3D isosurface of the total field intensity, colored by the
     S3 Stokes parameter to show polarization twist (the Hopfion structure).
+    Saves the output to a file with simulation parameters in the name.
     """
     # --- 1. Calculate Stokes Parameters ---
     total_intensity = np.abs(field_x)**2 + np.abs(field_y)**2 # This is S0
@@ -219,16 +220,21 @@ def visualize_3d_intensity(field_x, field_y, grid_size, title="3D Intensity Isos
     ax.set_ylim(mid_y - max_range, mid_y + max_range)
     ax.set_zlim(mid_z - max_range, mid_z + max_range)
 
-    plt.show()
+    # --- 5. Save File ---
+    filename = (f"hopfion_P{sim_params['power']:.2e}_GS{sim_params['grid_size']}"
+                f"_N{sim_params['num_steps']}_R{sim_params['r_hopfion']}"
+                f"_S{sim_params['sigma']}.png")
+    plt.savefig(filename, dpi=300, bbox_inches='tight')
+    print(f"Visualization saved to {filename}")
+    plt.close(fig)
 
 
 # --- Main Execution Block ---
 if __name__ == '__main__':
-    print("\n--- Visualizing Initial 3D Vector Hopfion Structure (2D Slices) ---")
     # --- Simulation Parameters ---
     GRID_SIZE = 128 # Increased for full simulation
     WAVELENGTH = 1.55
-    POWER = 1.37e16 # Optimal power from other simulations
+    POWER = 1.37e16 # 1.37e16 knot is visible
     N0_ALGAAS = 3.3
     N2_ALGAAS = 1e-17
     DZ = 0.1
@@ -238,7 +244,17 @@ if __name__ == '__main__':
     R_HOPFION = 1.0 # Radius parameter for Hopfion
     SIGMA = 1.0 # Size of the initial amplitude blob
 
+    # --- Create a dictionary of parameters for saving ---
+    sim_params = {
+        'grid_size': GRID_SIZE,
+        'power': POWER,
+        'num_steps': NUM_STEPS,
+        'r_hopfion': R_HOPFION,
+        'sigma': SIGMA,
+    }
+
     # --- Create Initial Field ---
+    print("Creating initial field...")
     initial_field_x, initial_field_y, dx, dy = create_initial_hopfion_field_vector(
         GRID_SIZE, WAVELENGTH, POWER, N0_ALGAAS, R_hopfion=R_HOPFION, sigma=SIGMA
     )
@@ -249,10 +265,12 @@ if __name__ == '__main__':
     final_field_x, final_field_y = run_vnlse_simulation(
         initial_field_x, initial_field_y, dx, dy, DZ, NUM_STEPS, k, k0, N2_ALGAAS)
 
-    # --- Visualize Initial Hopfion (Commented out for propagation) ---
-    # print("Visualizing initial 2D slices of Hopfion structure...")
-    # visualize_initial_hopfion_2d_slices(initial_field_x, initial_field_y, GRID_SIZE, title="Initial Hopfion Structure (2D Slices)")
-
     # --- Visualize Final 3D Intensity ---
     print("Visualizing final 3D intensity structure...")
-    visualize_3d_intensity(final_field_x, final_field_y, GRID_SIZE, title="3D Total Intensity Isosurface (Final State)")
+    visualize_3d_intensity(
+        final_field_x, 
+        final_field_y, 
+        GRID_SIZE, 
+        sim_params,
+        title="3D Hopfion Intensity and Polarization"
+    )

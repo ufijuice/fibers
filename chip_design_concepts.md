@@ -24,7 +24,19 @@ This design is based on the interference of two laser beams to create the topolo
                  [Phase Shifter]
 ```
 
+### 1.1. Simulation Validation: Soliton Collisions and Logic
+
+To verify the fundamental nonlinear dynamics in AlGaAs waveguides, several simulations focusing on spatial solitons were performed. These are documented in `nlse_hopf_soliton_simulation.py` and `soliton_gate_simulation.py`.
+
+Key findings include:
+*   **Stable Soliton Propagation:** The simulations confirmed that stable spatial solitons can propagate in the designed AlGaAs environment. An optimal input power (`POWER = 2.00e15`) was identified to balance nonlinearity and diffraction.
+*   **Soliton Interaction and Logic:** The script `soliton_gate_simulation.py` explores the concept of a soliton-based AND gate by simulating the collision of two solitons at a specific angle.
+*   **Animated Output:** These simulations generate animated GIFs (e.g., `final_soliton_propagation.gif`, `soliton_and_gate_1_and_1.gif`) that visualize the dynamic evolution and interaction of the solitons over the propagation distance.
+
+These foundational simulations were critical in establishing the baseline parameters and simulation techniques that were subsequently adapted for the more complex 3D Hopfion case.
+
 ## 2. Chip Design for a Hopfion Crystal
+
 
 This design is based on an array of coupled microresonators to create a crystal of Hopfions.
 
@@ -49,6 +61,17 @@ This design is based on an array of coupled microresonators to create a crystal 
                                      +---[Heater 3]---+
                                            ...
 ```
+
+### 2.1. Simulation Validation: 3D Vector Hopfion
+
+Building on the soliton work, a full 3D simulation of a vector Hopfion has been successfully implemented in `hopfion_simulation_3d.py`.
+
+Key achievements from this simulation include:
+*   **Stable Propagation:** A topologically stable, beam-like Hopfion was shown to propagate successfully within a simulated AlGaAs medium.
+*   **Topological Visualization:** A sophisticated visualization technique was developed that maps the S3 Stokes parameter (representing circular polarization) as a color pattern onto a 3D intensity isosurface, revealing the knotted topological structure.
+*   **Parameter-Rich Output:** The script automatically saves the final visualization to a PNG file (e.g., `hopfion_P1.37e+16_GS128_N200_R1.0_S1.0.png`), with the key simulation parameters embedded in the filename for clear record-keeping.
+
+This simulation provides a strong foundation for designing the physical waveguide structures and Hopfion generation mechanisms discussed in this document.
 
 ### Further Considerations:
 

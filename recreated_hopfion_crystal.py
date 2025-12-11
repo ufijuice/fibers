@@ -6,6 +6,8 @@ This script generates a hopfion crystal, a theoretical topological structure.
 The code is a mathematical model based on a rational map, and does not simulate
 a specific physical system.
 
+2504.03981v1.pdf
+
 Realization in AlGaAs:
 
 The creation of such a topological structure in a physical system is a topic

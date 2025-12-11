@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 def create_hopf_soliton(grid_size=100, beam_waist=1.0, wavelength1=0.8, wavelength2=1.2, k_val=1.0, time=0.0, n0_algaas=3.3, n2_algaas=1e-17, power=1.0):
     """
     Simulates the creation of a Hopf soliton in AlGaAs, including the Kerr effect.
+    
+    2406.06096v1.pdf
 
     Args:
         grid_size (int): The resolution of the simulation grid.

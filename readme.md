@@ -1,5 +1,13 @@
 # Conceptual Chip Designs for Hopfions and Hopf Solitons in AlGaAs
 
+### More Context: Project History
+
+This project follows a research trajectory that began with establishing the theoretical groundwork for using homotopy groups in machine learning, as detailed in the paper [Homotopy-Based Computations in Machine Learning](https://occurai.com/static/papers/homotopy_for_ml.pdf).
+
+Following the paper, the next phase involved applying these concepts to create topological encoders for neural networks. However, this practical work revealed significant performance bottlenecks due to the limitations of conventional hardware for these specialized computations.
+
+This led to the current research direction: to bypass these hardware limitations by designing a photonic integrated circuit capable of *natively* computing homotopy groups. The exploration of optical Hopfions, as detailed in the other referenced papers, is a direct result of this strategic shift from software simulation to hardware design.
+
 This document outlines two conceptual chip designs for the creation of Hopfions and Hopf solitons using Aluminum Gallium Arsenide (AlGaAs) as the primary material. The high Kerr nonlinearity of AlGaAs makes it a suitable candidate for realizing these topological structures.
 
 ## 1. Chip Design for a Single Hopf Soliton
@@ -114,31 +122,8 @@ The development of chips capable of generating and manipulating topological soli
 
 This approach is at the forefront of research at the intersection of physics, mathematics, and computer science, and the development of these chips is a critical step toward realizing this new form of computation.
 
-## Architectures for Machine Learning Integration
+## References
 
-The question of *how* and *where* to implement a machine learning model that uses the topological data from the photonic chip is a critical architectural consideration. There are three main approaches:
-
-### 1. The Hybrid Model (Topological Accelerator)
-
-This is the most practical and straightforward approach for the near term.
-
-*   **Architecture:** The system consists of two main components: a specialized photonic chip that generates and measures the topological states, and a conventional digital computer (with a CPU/GPU) that runs the machine learning model.
-*   **Workflow:** The photonic chip acts as a co-processor or "topological accelerator". It performs the native computation and outputs classical data (e.g., detector readouts). This data is then fed into the digital computer, which uses it to train or run the ML model.
-*   **Analogy:** This is similar to how a GPU accelerates graphics or AI workloads for a CPU. The photonic chip accelerates the one task it's good at: computing topological features.
-
-### 2. The Fully Photonic Model (Optical Neural Network)
-
-This is a more advanced, long-term vision that avoids the need for a separate digital computer for the ML task.
-
-*   **Architecture:** A single, monolithic photonic chip that contains two sections: one for generating the topological solitons, and another that is structured as an Optical Neural Network (ONN).
-*   **Workflow:** The light from the soliton is directly fed into the ONN section of the chip. The neural network computation happens entirely in the optical domain, using components like waveguides and resonators instead of digital transistors. The final result is read out from a detector.
-*   **Advantages:** This "non-binary" compute architecture would be extremely fast and energy-efficient, as it avoids the overhead of converting between optical and electronic signals.
-
-### 3. The In-Situ Learning Model (Physical Reservoir Computing)
-
-This is the most futuristic and speculative approach.
-
-*   **Architecture:** A relatively simple chip made of the nonlinear AlGaAs material. There is no explicitly programmed neural network.
-*   **Workflow:** The material itself is used as a "reservoir" of complex dynamics. The system is "trained" by adjusting the input light signals and learning to interpret the output signals. The material's own physical response performs the computation.
-*   **Advantages:** This approach could lead to extremely powerful and efficient computing systems, but it is still in the early stages of fundamental research.
-
+1.  https://arxiv.org/html/2406.06096v1
+2.  https://arxiv.org/html/2504.03981v1
+3.  https://journals.aps.org/prxquantum/abstract/10.1103/PRXQuantum.6.010338

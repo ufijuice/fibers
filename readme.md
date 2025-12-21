@@ -107,7 +107,7 @@ While the use of AlGaAs is promising, creating Hopfions and Hopf solitons on a c
 
 ## Connection to Native Computation of Homotopy Groups
 
-The development of chips capable of generating and manipulating topological solitons like Hopfions opens up the fascinating possibility of "natively" computing or studying homotopy groups. This represents a form of analog computing where the physical system itself is a direct representation of the abstract mathematical structure.
+The development of chips that manipulate topological solitons opens the door to a new form of **non-binary computation**. Instead of simulating these mathematical structures on a digital computer, the physical state of the solitons on the chip—their position, orientation, and topology—is used to directly represent and compute information.
 
 ### Key Concepts:
 

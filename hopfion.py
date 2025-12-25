@@ -14,6 +14,15 @@ import time
 MATERIALS = {
     'algaas': {'n0': 3.3, 'n2': 1e-17},
     'silica': {'n0': 1.44, 'n2': 2.6e-20},
+    'bk7': {'n0': 1.50, 'n2': 3.45e-20},
+    'sapphire': {'n0': 1.75, 'n2': 3.0e-20},
+    'zns': {'n0': 2.27, 'n2': 7.9e-18},
+    'silicon': {'n0': 3.48, 'n2': 6e-18},
+    'silicon_nitride': {'n0': 2.0, 'n2': 2.4e-19},
+    'inp': {'n0': 3.17, 'n2': 1.5e-17},
+    'gaas': {'n0': 3.38, 'n2': 1.5e-17},
+    'linbo3': {'n0': 2.14, 'n2': 1.0e-19},
+    'diamond': {'n0': 2.39, 'n2': 1.3e-19},
 }
 
 # --- Core Simulation Logic ---

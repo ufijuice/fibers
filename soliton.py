@@ -13,13 +13,19 @@ MATERIALS = {
     'bk7': {'n0': 1.50, 'n2': 3.45e-20},
     'sapphire': {'n0': 1.75, 'n2': 3.0e-20},
     'zns': {'n0': 2.27, 'n2': 7.9e-18},
+    'silicon': {'n0': 3.48, 'n2': 6e-18},
+    'silicon_nitride': {'n0': 2.0, 'n2': 2.4e-19},
+    'inp': {'n0': 3.17, 'n2': 1.5e-17},
+    'gaas': {'n0': 3.38, 'n2': 1.5e-17},
+    'linbo3': {'n0': 2.14, 'n2': 1.0e-19},
+    'diamond': {'n0': 2.39, 'n2': 1.3e-19},
 }
 
 # --- Core Simulation & Visualization Logic ---
 
 def run_nlse_simulation(initial_field, sim_params):
     """
-    Solves the 3D NLSE using the split-step Fourier method and returns the history.
+    Solves the 3D NLSE using the split-step Fourier method and returns the full field history.
     """
     dx, dy, dz_step = sim_params['dx'], sim_params['dy'], sim_params['dz']
     num_steps = sim_params['num_steps']
@@ -33,7 +39,7 @@ def run_nlse_simulation(initial_field, sim_params):
     linear_operator = np.exp(-1j * (KX**2 + KY**2) / (2 * k) * dz_step / 2)
 
     field = initial_field.copy()
-    field_history = [np.abs(field[:, :, field.shape[2] // 2])**2]
+    field_history = [field.copy()]
 
     click.echo("Running NLSE simulation...")
     for i in range(num_steps):
@@ -46,7 +52,7 @@ def run_nlse_simulation(initial_field, sim_params):
             field[:, :, z_idx] = np.fft.ifft2(field_k_slice)
         
         if (i + 1) % store_interval == 0:
-            field_history.append(np.abs(field[:, :, field.shape[2] // 2])**2)
+            field_history.append(field.copy())
             click.echo(f"Step {i+1}/{num_steps} completed.")
 
     return field_history
@@ -148,23 +154,36 @@ def run_group():
 @click.option('--material', type=click.Choice(MATERIALS.keys()), default='algaas')
 @click.option('--output-dir', default='results', type=click.Path())
 def run_collision(power, grid_size, num_steps, angle, material, output_dir):
-    """Simulates the collision of two spatial solitons."""
+    """Simulates the collision of two spatial solitons, saves data, and visualizes."""
     material_props = MATERIALS[material]
     sim_params = {
         'power': power, 'grid_size': grid_size, 'num_steps': num_steps, 'angle': angle,
         'beam_waist': 1.0, 'wavelength': 1.55, 'dz': 0.1, 'store_interval': 10,
-        'n0': material_props['n0'], 'n2': material_props['n2']
+        'n0': material_props['n0'], 'n2': material_props['n2'], 'material': material
     }
     
     initial_field = create_collision_field(sim_params)
     sim_params.update({'k0': 2 * np.pi / sim_params['wavelength']})
     sim_params['k'] = sim_params['k0'] * sim_params['n0']
 
-    field_history = run_nlse_simulation(initial_field, sim_params)
+    field_history_full = run_nlse_simulation(initial_field, sim_params)
     
     os.makedirs(output_dir, exist_ok=True)
-    filename = os.path.join(output_dir, f"soliton_collision_{material}_P{power:.2e}_GS{grid_size}_N{num_steps}_A{angle}.gif")
-    animate_simulation(field_history, sim_params, filename)
+    timestamp = time.strftime("%Y%m%d-%H%M%S")
+    filename_base = f"soliton_collision_{material}_P{power:.2e}_GS{grid_size}_N{num_steps}_A{angle}_{timestamp}"
+    
+    # Save the full data
+    data_filename = os.path.join(output_dir, f"{filename_base}.npz")
+    click.echo(f"Saving full simulation data to {data_filename}...")
+    np.savez_compressed(data_filename, field_history=np.array(field_history_full, dtype=object), sim_params=sim_params)
+    click.echo("Data saved.")
+
+    # Process data for animation (center slice intensity)
+    animation_history = [np.abs(field[:, :, field.shape[2] // 2])**2 for field in field_history_full]
+
+    # Create and save the animation
+    anim_filename = os.path.join(output_dir, f"{filename_base}.gif")
+    animate_simulation(animation_history, sim_params, anim_filename)
 
 @run_group.command(name='gate')
 @click.option('--inputs', default='1x1', type=click.Choice(['1x1', '1x0', '0x0']))
@@ -176,25 +195,38 @@ def run_collision(power, grid_size, num_steps, angle, material, output_dir):
 @click.option('--material', type=click.Choice(MATERIALS.keys()), default='algaas')
 @click.option('--output-dir', default='results', type=click.Path())
 def run_gate(inputs, power, grid_size, num_steps, separation, angle, material, output_dir):
-    """Simulates a soliton-based AND gate."""
+    """Simulates a soliton-based AND gate, saves data, and visualizes."""
     material_props = MATERIALS[material]
     input_a, input_b = int(inputs[0]), int(inputs[2])
     sim_params = {
         'power': power, 'grid_size': grid_size, 'num_steps': num_steps,
         'separation': separation, 'angle': angle, 'input_a': input_a, 'input_b': input_b,
         'beam_waist': 1.0, 'wavelength': 1.55, 'dz': 0.2, 'store_interval': 5,
-        'n0': material_props['n0'], 'n2': material_props['n2']
+        'n0': material_props['n0'], 'n2': material_props['n2'], 'material': material
     }
 
     initial_field = create_gate_field(sim_params)
     sim_params.update({'k0': 2 * np.pi / sim_params['wavelength']})
     sim_params['k'] = sim_params['k0'] * sim_params['n0']
 
-    field_history = run_nlse_simulation(initial_field, sim_params)
+    field_history_full = run_nlse_simulation(initial_field, sim_params)
 
     os.makedirs(output_dir, exist_ok=True)
-    filename = os.path.join(output_dir, f"soliton_gate_{inputs}_{material}_P{power:.2e}_GS{grid_size}_N{num_steps}_S{separation}_A{angle}.gif")
-    animate_simulation(field_history, sim_params, filename)
+    timestamp = time.strftime("%Y%m%d-%H%M%S")
+    filename_base = f"soliton_gate_{inputs}_{material}_P{power:.2e}_GS{grid_size}_N{num_steps}_S{separation}_A{angle}_{timestamp}"
+
+    # Save the full data
+    data_filename = os.path.join(output_dir, f"{filename_base}.npz")
+    click.echo(f"Saving full simulation data to {data_filename}...")
+    np.savez_compressed(data_filename, field_history=np.array(field_history_full, dtype=object), sim_params=sim_params)
+    click.echo("Data saved.")
+
+    # Process data for animation (center slice intensity)
+    animation_history = [np.abs(field[:, :, field.shape[2] // 2])**2 for field in field_history_full]
+
+    # Create and save the animation
+    anim_filename = os.path.join(output_dir, f"{filename_base}.gif")
+    animate_simulation(animation_history, sim_params, anim_filename)
 
 cli.add_command(run_group)
 

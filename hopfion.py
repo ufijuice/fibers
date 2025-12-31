@@ -173,10 +173,11 @@ def visualize_and_save(fields, sim_params, filename_prefix):
 
     sm = plt.cm.ScalarMappable(cmap=cmap, norm=norm)
     sm.set_array(face_s3_values)
-    cbar = fig.colorbar(sm, shrink=0.6, aspect=20)
+    cbar = fig.colorbar(sm, ax=ax, shrink=0.6, aspect=20)
     cbar.set_label('Normalized S3 Parameter (Polarization)')
 
-    filename = f"{filename_prefix}_M_{sim_params['material']}_P{sim_params['power']:.2e}_GS{grid_size}.png"
+    timestamp = time.strftime("%Y%m%d-%H%M%S")
+    filename = f"{filename_prefix}_M_{sim_params['material']}_P{sim_params['power']:.2e}_GS{grid_size}_{timestamp}.png"
     plt.savefig(filename, dpi=300, bbox_inches='tight')
     click.echo(f"Visualization saved to {filename}")
     plt.close(fig)
@@ -217,8 +218,7 @@ def run_single(grid_size, power, num_steps, sigma, material, output_dir):
     stored_fields = run_vnlse_simulation(initial_field_x, initial_field_y, sim_params)
     
     os.makedirs(output_dir, exist_ok=True)
-    timestamp = time.strftime("%Y%m%d-%H%M%S")
-    filename_prefix = os.path.join(output_dir, f"single_hopfion_{timestamp}")
+    filename_prefix = os.path.join(output_dir, f"single_hopfion")
     
     click.echo(f"Saving simulation results...")
     np.savez_compressed(f"{filename_prefix}.npz", stored_fields=np.array(stored_fields, dtype=object), sim_params=sim_params)

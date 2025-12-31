@@ -19,8 +19,11 @@ mkdir -p "$SWEEP_DIR"
 for power in "${POWER_LEVELS[@]}"; do
     echo "Queueing simulation for POWER = $power"
     
+    # Ensure your virtual environment is active before running this script.
+    # e.g., source venv/bin/activate
+    #
     # Run the Python script in the background with the specified power.
-    python3 hopfion_interaction_simulation.py run --power "$power" --output-dir "$SWEEP_DIR" &
+    python hopfion.py run interaction --power "$power" --output-dir "$SWEEP_DIR" &
 
     # If we've hit the max number of parallel jobs, wait for one to finish.
     if [[ $(jobs -r -p | wc -l) -ge $MAX_PARALLEL_JOBS ]]; then

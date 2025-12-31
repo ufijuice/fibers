@@ -185,17 +185,8 @@ def run_collision(power, grid_size, num_steps, angle, material, output_dir):
     anim_filename = os.path.join(output_dir, f"{filename_base}.gif")
     animate_simulation(animation_history, sim_params, anim_filename)
 
-@run_group.command(name='gate')
-@click.option('--inputs', default='1x1', type=click.Choice(['1x1', '1x0', '0x0']))
-@click.option('--power', default=6.87e3, type=float)
-@click.option('--grid-size', default=128, type=int)
-@click.option('--num-steps', default=200, type=int)
-@click.option('--separation', default=5.0, type=float)
-@click.option('--angle', default=-0.1, type=float)
-@click.option('--material', type=click.Choice(MATERIALS.keys()), default='algaas')
-@click.option('--output-dir', default='results', type=click.Path())
-def run_gate(inputs, power, grid_size, num_steps, separation, angle, material, output_dir):
-    """Simulates a soliton-based AND gate, saves data, and visualizes."""
+def _run_gate_simulation(inputs, power, grid_size, num_steps, separation, angle, material, output_dir):
+    """Internal logic for running a single soliton gate simulation."""
     material_props = MATERIALS[material]
     input_a, input_b = int(inputs[0]), int(inputs[2])
     sim_params = {
@@ -227,6 +218,40 @@ def run_gate(inputs, power, grid_size, num_steps, separation, angle, material, o
     # Create and save the animation
     anim_filename = os.path.join(output_dir, f"{filename_base}.gif")
     animate_simulation(animation_history, sim_params, anim_filename)
+
+@run_group.command(name='gates')
+@click.option('--power', default=6.87e3, type=float)
+@click.option('--grid-size', default=128, type=int)
+@click.option('--num-steps', default=200, type=int)
+@click.option('--separation', default=5.0, type=float)
+@click.option('--angle', default=-0.1, type=float)
+@click.option('--material', type=click.Choice(MATERIALS.keys()), default='algaas')
+@click.option('--output-dir', default='results', type=click.Path())
+def run_gates(power, grid_size, num_steps, separation, angle, material, output_dir):
+    """Runs all three gate simulations (1x1, 1x0, 0x0) sequentially."""
+    
+    all_inputs = ['1x1', '1x0', '0x0']
+    
+    # Create a unique subdirectory for this batch run
+    batch_dir_name = f"sweep_gate_{time.strftime('%Y%m%d-%H%M%S')}"
+    batch_dir_path = os.path.join(output_dir, batch_dir_name)
+    os.makedirs(batch_dir_path, exist_ok=True)
+    click.echo(f"Starting batch run. Results will be in: {batch_dir_path}")
+
+    for inputs in all_inputs:
+        click.echo(f"--- Running simulation for inputs: {inputs} ---")
+        _run_gate_simulation(
+            inputs=inputs,
+            power=power,
+            grid_size=grid_size,
+            num_steps=num_steps,
+            separation=separation,
+            angle=angle,
+            material=material,
+            output_dir=batch_dir_path  # Save results in the new subdirectory
+        )
+    
+    click.echo("--- All gate simulations completed. ---")
 
 cli.add_command(run_group)
 

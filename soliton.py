@@ -126,7 +126,7 @@ def run_nlse_simulation(initial_field, sim_params):
     # --- Linear operators ---
     spatial_op = 0.0 if disable_diffraction else -(KX**2 + KY**2) / (2 * k)
 
-    temporal_op = 0.0 if disable_dispersion else temporal_op = (beta2 / 2) * OMEGA**2
+    temporal_op = 0.0 if disable_dispersion else (beta2 / 2) * OMEGA**2
 
     linear_phase = np.exp(0.5j * (spatial_op + temporal_op) * dz)
 
@@ -406,7 +406,7 @@ def run_group():
 @click.option('--num-steps', default=200, type=int, help="Number of propagation steps.")
 @click.option('--dz', default=None, type=float, help='Propagation step size in meters.')
 @click.option('--separation', default=5e-6, type=float, help='Initial separation between beams in meters.')
-@click.option('--angle', default=2.1, type=float, help='Collision angle in radians.')
+@click.option('--angle', default=1.1, type=float, help='Collision angle in radians.')
 @click.option('--pulse-duration', default=50e-15, type=float, help='Duration (std dev) of input pulses in seconds.')
 @click.option('--beam-waist', default=1e-6, type=float, help='Beam waist (radius) in meters.')
 @click.option('--dispersion', default=-20.0, type=float, help="GVD (β₂) in ps²/km. Use negative for anomalous.")

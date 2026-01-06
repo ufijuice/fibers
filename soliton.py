@@ -93,8 +93,9 @@ def report_simulation_regime(sim_params):
 
 def run_nlse_simulation(initial_field, sim_params):
     """
-    Solves the (3+1)D NLSE for pulsed beams with real transverse motion.
-    Includes diffraction, dispersion, Kerr nonlinearity, and transverse walk-off.
+    Solves the (3+1)D NLSE for pulsed beams.
+    Includes diffraction, dispersion, and Kerr nonlinearity.
+    Transverse motion is handled by phase tilts in the initial field.
     """
 
     # --- Grid parameters ---
@@ -109,7 +110,6 @@ def run_nlse_simulation(initial_field, sim_params):
     n2 = sim_params["n2"]
 
     beta2 = sim_params.get("dispersion", 0.0) * 1e-27  # ps^2/km → s^2/m
-    vx = sim_params.get("vx", 0.0)  # transverse group velocity (m/s)
 
     disable_diffraction = sim_params.get("disable_diffraction", False)
     disable_dispersion = sim_params.get("disable_dispersion", False)
@@ -136,14 +136,9 @@ def run_nlse_simulation(initial_field, sim_params):
 
     initial_energy = np.sum(np.abs(field)**2) * dx * dy * dt
 
-    click.echo("Running NLSE with transverse walk-off...")
+    click.echo("Running NLSE simulation...")
 
     for step in range(num_steps):
-
-        # --- Transverse walk-off (REAL motion) ---
-        if vx != 0.0:
-            shift_x = vx * dz / dx
-            field = np.roll(field, int(np.round(shift_x)), axis=1)
 
         # --- Linear half-step ---
         field_f = np.fft.fftn(field)
@@ -406,7 +401,7 @@ def run_group():
 @click.option('--num-steps', default=200, type=int, help="Number of propagation steps.")
 @click.option('--dz', default=None, type=float, help='Propagation step size in meters.')
 @click.option('--separation', default=5e-6, type=float, help='Initial separation between beams in meters.')
-@click.option('--angle', default=1.1, type=float, help='Collision angle in radians.')
+@click.option('--angle', default=0.2, type=float, help='Collision angle in radians.')
 @click.option('--pulse-duration', default=50e-15, type=float, help='Duration (std dev) of input pulses in seconds.')
 @click.option('--beam-waist', default=1e-6, type=float, help='Beam waist (radius) in meters.')
 @click.option('--dispersion', default=-20.0, type=float, help="GVD (β₂) in ps²/km. Use negative for anomalous.")

@@ -93,86 +93,92 @@ def report_simulation_regime(sim_params):
 
 def run_nlse_simulation(initial_field, sim_params):
     """
-    Solves the (3+1)D NLSE for a "light bullet" using a full 3D split-step Fourier method.
-    This version correctly models both spatial diffraction and temporal dispersion.
+    Solves the (3+1)D NLSE for pulsed beams with real transverse motion.
+    Includes diffraction, dispersion, Kerr nonlinearity, and transverse walk-off.
     """
-    # --- Grid and Step Parameters (with physical units) ---
-    ny_grid, nx_grid, nt_grid = initial_field.shape
-    dx, dy, dt = sim_params['dx'], sim_params['dy'], sim_params['dt'] # In meters and seconds
-    dz_step = sim_params['dz'] # Propagation step in meters
-    num_steps = sim_params['num_steps']
 
-    # --- Physics Parameters ---
-    k = sim_params['k']
-    k0 = sim_params['k']
-    n2 = sim_params['n2']
-    dispersion_param = sim_params.get('dispersion', 0) # GVD in ps^2/km
-    beta2_si = dispersion_param * 1e-27 # ps^2/km to s^2/m
+    # --- Grid parameters ---
+    ny, nx, nt = initial_field.shape
+    dx, dy, dt = sim_params["dx"], sim_params["dy"], sim_params["dt"]
+    dz = sim_params["dz"]
+    num_steps = sim_params["num_steps"]
 
-    store_interval = sim_params.get('store_interval', 5)
-    
-    disable_diffraction = sim_params.get('disable_diffraction', False)
-    disable_dispersion = sim_params.get('disable_dispersion', False)
+    # --- Physical parameters ---
+    k0 = sim_params["k0"]
+    k = sim_params["k"]
+    n2 = sim_params["n2"]
 
-    # --- 3D Frequency Grid (physical units) ---
-    kx = 2 * np.pi * np.fft.fftfreq(nx_grid, d=dx)
-    ky = 2 * np.pi * np.fft.fftfreq(ny_grid, d=dy)
-    omega = 2 * np.pi * np.fft.fftfreq(nt_grid, d=dt)
-    
-    # Match memory layout of field array (y, x, t)
-    KY, KX, OMEGA = np.meshgrid(ky, kx, omega, indexing='ij')
+    beta2 = sim_params.get("dispersion", 0.0) * 1e-27  # ps^2/km → s^2/m
+    vx = sim_params.get("vx", 0.0)  # transverse group velocity (m/s)
 
-    # --- 3D Linear Operator ---
-    spatial_op = 0
-    if not disable_diffraction:
-        spatial_op = -(KX**2 + KY**2) / (2 * k)
+    disable_diffraction = sim_params.get("disable_diffraction", False)
+    disable_dispersion = sim_params.get("disable_dispersion", False)
 
-    temporal_op = 0
-    if not disable_dispersion:
-        temporal_op = (beta2_si / 2) * OMEGA**2
-    
-    linear_operator = np.exp(0.5j * (spatial_op + temporal_op) * dz_step)
+    store_interval = sim_params.get("store_interval", 5)
 
-    # --- Simulation Loop ---
-    field = initial_field.copy()
+    # --- Frequency grids ---
+    kx = 2 * np.pi * np.fft.fftfreq(nx, d=dx)
+    ky = 2 * np.pi * np.fft.fftfreq(ny, d=dy)
+    omega = 2 * np.pi * np.fft.fftfreq(nt, d=dt)
+
+    KY, KX, OMEGA = np.meshgrid(ky, kx, omega, indexing="ij")
+
+    # --- Linear operators ---
+    spatial_op = 0.0 if disable_diffraction else -(KX**2 + KY**2) / (2 * k)
+
+    temporal_op = 0.0 if disable_dispersion else temporal_op = (beta2 / 2) * OMEGA**2
+
+    linear_phase = np.exp(0.5j * (spatial_op + temporal_op) * dz)
+
+    # --- Initialize ---
+    field = initial_field.astype(np.complex128)
     field_history = [field.copy()]
 
-    # Track energy for debugging
     initial_energy = np.sum(np.abs(field)**2) * dx * dy * dt
-    
-    click.echo("Running full 3D NLSE simulation...")
-    for i in range(num_steps):
-        # First half linear step
+
+    click.echo("Running NLSE with transverse walk-off...")
+
+    for step in range(num_steps):
+
+        # --- Transverse walk-off (REAL motion) ---
+        if vx != 0.0:
+            shift_x = vx * dz / dx
+            field = np.roll(field, int(np.round(shift_x)), axis=1)
+
+        # --- Linear half-step ---
         field_f = np.fft.fftn(field)
-        field_f *= linear_operator
+        field_f *= linear_phase
         field = np.fft.ifftn(field_f)
 
-        # Nonlinear step
-        field *= np.exp(1j * k0 * n2 * np.abs(field)**2 * dz_step)
+        # --- Kerr nonlinearity ---
+        field *= np.exp(1j * k0 * n2 * np.abs(field)**2 * dz)
 
-        # Second half linear step
+        # --- Linear half-step ---
         field_f = np.fft.fftn(field)
-        field_f *= linear_operator
+        field_f *= linear_phase
         field = np.fft.ifftn(field_f)
-        
-        if (i + 1) % 20 == 0:
+
+        # --- Stability check ---
+        if (step + 1) % 20 == 0:
             if not np.all(np.isfinite(field)):
-                click.secho("\nError: Simulation has become numerically unstable (NaN or Inf).", fg='red')
-                click.secho("Try reducing the --power or the 'dz' step size in the script.", fg='red')
+                click.secho("Simulation unstable (NaN/Inf). Reduce dz or power.", fg="red")
                 return field_history, initial_energy
 
-        if (i + 1) % store_interval == 0:
+        # --- Store history ---
+        if (step + 1) % store_interval == 0:
             field_history.append(field.copy())
-            current_energy = np.sum(np.abs(field)**2) * dx * dy * dt
-            energy_ratio = current_energy / initial_energy
-            click.echo(f"Step {i+1}/{num_steps} completed. Energy ratio: {energy_ratio:.4f}")
+            energy = np.sum(np.abs(field)**2) * dx * dy * dt
+            click.echo(
+                f"Step {step+1}/{num_steps} | Energy ratio: {energy/initial_energy:.4f}"
+            )
 
     final_energy = np.sum(np.abs(field)**2) * dx * dy * dt
-    click.echo(f"\nInitial energy: {initial_energy:.4e}")
-    click.echo(f"Final energy: {final_energy:.4e}")
-    click.echo(f"Energy conservation: {(final_energy/initial_energy)*100:.2f}%\n")
 
-    return field_history
+    click.echo(f"\nInitial energy: {initial_energy:.4e}")
+    click.echo(f"Final energy:   {final_energy:.4e}")
+    click.echo(f"Energy conserved: {100*final_energy/initial_energy:.2f}%\n")
+
+    return field_history, initial_energy
 
 def animate_simulation(field_history, sim_params, output_filename):
     """
@@ -257,9 +263,10 @@ def create_collision_field(sim_params):
     grid_size = sim_params['grid_size']
     beam_waist_m = sim_params['beam_waist']
     pulse_duration_s = sim_params['pulse_duration']
+    separation = sim_params.get('separation', 10 * beam_waist_m)
 
-    # Set grid size
-    sim_size_xy_m = 10 * beam_waist_m # Larger grid for collision
+    # Set grid size to be large enough for separated beams
+    sim_size_xy_m = 3 * separation
     sim_size_t_s = 10 * pulse_duration_s
 
     x = np.linspace(-sim_size_xy_m, sim_size_xy_m, grid_size)
@@ -272,17 +279,19 @@ def create_collision_field(sim_params):
     k0 = sim_params['k0']
     angle, power, effective_area = (sim_params[k] for k in ['angle', 'power', 'effective_area'])
 
-    # Temporal envelope
     pulse_envelope = np.exp(-T**2 / (2 * pulse_duration_s**2))
-    # Spatial beam profile
-    beam_profile = np.exp(-(X**2 + Y**2) / beam_waist_m**2)
-
     peak_intensity = power / effective_area
-
-    # Use physical transverse wavevector
     k_x = k0 * np.sin(angle)
-    E1 = np.sqrt(peak_intensity) * beam_profile * pulse_envelope * np.exp(1j * k_x * X)
-    E2 = np.sqrt(peak_intensity) * beam_profile * pulse_envelope * np.exp(-1j * k_x * X)
+
+    # Beam 1 (starts left, moves right)
+    X1 = X + separation / 2
+    beam_profile1 = np.exp(-(X1**2 + Y**2) / beam_waist_m**2)
+    E1 = np.sqrt(peak_intensity) * beam_profile1 * pulse_envelope * np.exp(+1j * k_x * X1)
+
+    # Beam 2 (starts right, moves left)
+    X2 = X - separation / 2
+    beam_profile2 = np.exp(-(X2**2 + Y**2) / beam_waist_m**2)
+    E2 = np.sqrt(peak_intensity) * beam_profile2 * pulse_envelope * np.exp(-1j * k_x * X2)
 
     sim_params.update({'dx': dx, 'dy': dy, 'dt': dt})
     return E1 + E2
@@ -295,7 +304,7 @@ def create_gate_field(sim_params):
     separation = sim_params['separation']
 
     # Set grid size
-    sim_size_xy_m = 2 * separation # Ensure grid is large enough for separated beams
+    sim_size_xy_m = 3 * separation # Ensure grid is large enough for separated beams
     sim_size_t_s = 10 * pulse_duration_s
 
     x = np.linspace(-sim_size_xy_m, sim_size_xy_m, grid_size)
@@ -318,12 +327,14 @@ def create_gate_field(sim_params):
     if input_a == 1:
         X_a = X + separation / 2
         beam_profile_a = np.exp(-(X_a**2 + Y**2) / beam_waist_m**2)
-        phase_a = np.exp(-1j * k_x * X)
+        # phase_a = np.exp(1j * k_x * X)
+        phase_a = np.exp(+1j * k_x * X_a)
         initial_field += np.sqrt(peak_intensity) * beam_profile_a * pulse_envelope * phase_a
     if input_b == 1:
         X_b = X - separation / 2
         beam_profile_b = np.exp(-(X_b**2 + Y**2) / beam_waist_m**2)
-        phase_b = np.exp(1j * k_x * X)
+        # phase_b = np.exp(-1j * k_x * X)
+        phase_b = np.exp(-1j * k_x * X_b)
         initial_field += np.sqrt(peak_intensity) * beam_profile_b * pulse_envelope * phase_b
 
     sim_params.update({'dx': dx, 'dy': dy, 'dt': dt})
@@ -391,16 +402,17 @@ def run_group():
 
 @run_group.command(name='collision')
 @click.option('--power', default=7.3e4, type=float, help='Peak power in Watts. Default is ~P_critical for AlGaAs.')
-@click.option('--grid-size', default=64, type=int, help="Grid resolution for X, Y, and Z axes.")
-@click.option('--num-steps', default=500, type=int, help="Number of propagation steps.")
+@click.option('--grid-size', default=128, type=int, help="Grid resolution for X, Y, and T axes.")
+@click.option('--num-steps', default=200, type=int, help="Number of propagation steps.")
 @click.option('--dz', default=None, type=float, help='Propagation step size in meters.')
-@click.option('--angle', default=0.01, type=float, help='Collision angle in radians.')
+@click.option('--separation', default=5e-6, type=float, help='Initial separation between beams in meters.')
+@click.option('--angle', default=2.1, type=float, help='Collision angle in radians.')
 @click.option('--pulse-duration', default=50e-15, type=float, help='Duration (std dev) of input pulses in seconds.')
 @click.option('--beam-waist', default=1e-6, type=float, help='Beam waist (radius) in meters.')
 @click.option('--dispersion', default=-20.0, type=float, help="GVD (β₂) in ps²/km. Use negative for anomalous.")
 @click.option('--material', type=click.Choice(MATERIALS.keys()), default='algaas')
 @click.option('--output-dir', default='results', type=click.Path())
-def run_collision(power, grid_size, num_steps, dz, angle, pulse_duration, beam_waist, dispersion, material, output_dir):
+def run_collision(power, grid_size, num_steps, dz, separation, angle, pulse_duration, beam_waist, dispersion, material, output_dir):
     """Simulates the collision of two spatial soliton pulses, saves data, and visualizes."""
     material_props = MATERIALS[material]
     if dz is None:
@@ -415,6 +427,7 @@ def run_collision(power, grid_size, num_steps, dz, angle, pulse_duration, beam_w
 
     sim_params = {
         'power': power, 'grid_size': grid_size, 'num_steps': num_steps, 'angle': angle,
+        'separation': separation,
         'pulse_duration': pulse_duration, 'beam_waist': beam_waist, 'wavelength': 1.55e-6,
         'dz': dz_auto, 'store_interval': 1, 'n0': material_props['n0'],
         'n2': material_props['n2'], 'material': material, 'effective_area': np.pi * beam_waist**2,
@@ -427,17 +440,12 @@ def run_collision(power, grid_size, num_steps, dz, angle, pulse_duration, beam_w
 
     initial_field = create_collision_field(sim_params)
 
-    field_history_full = run_nlse_simulation(initial_field, sim_params)
+    field_history_full, initial_energy = run_nlse_simulation(initial_field, sim_params)
     
     os.makedirs(output_dir, exist_ok=True)
     timestamp = time.strftime("%Y%m%d-%H%M%S")
     filename_base = f"soliton_collision_{material}_P{power:.2e}_GS{grid_size}_N{num_steps}_A{angle}_{timestamp}"
     
-    data_filename = os.path.join(output_dir, f"{filename_base}.npz")
-    click.echo(f"Saving full simulation data to {data_filename}...")
-    np.savez_compressed(data_filename, field_history=np.array(field_history_full, dtype=object), sim_params=sim_params)
-    click.echo("Data saved.")
-
     click.echo("Processing animation frames...")
     animation_history = []
     for field in field_history_full:
@@ -445,6 +453,12 @@ def run_collision(power, grid_size, num_steps, dz, angle, pulse_duration, beam_w
         # This shows how beams propagate and collide in space
         intensity_spatial = np.sum(np.abs(field)**2, axis=2)
         animation_history.append(intensity_spatial)
+
+    # Save the much smaller, processed data for the animation
+    data_filename = os.path.join(output_dir, f"{filename_base}.npz")
+    click.echo(f"Saving processed simulation data to {data_filename}...")
+    np.savez_compressed(data_filename, animation_history=np.array(animation_history), sim_params=sim_params)
+    click.echo("Data saved.")
 
     anim_filename = os.path.join(output_dir, f"{filename_base}.gif")
     animate_simulation(animation_history, sim_params, anim_filename)
@@ -481,16 +495,11 @@ def _run_gate_simulation(inputs, power, grid_size, num_steps, dz, separation, an
 
     initial_field = create_gate_field(sim_params)
 
-    field_history_full = run_nlse_simulation(initial_field, sim_params)
+    field_history_full, initial_energy = run_nlse_simulation(initial_field, sim_params)
 
     os.makedirs(output_dir, exist_ok=True)
     timestamp = time.strftime("%Y%m%d-%H%M%S")
     filename_base = f"soliton_gate_{inputs}_{material}_P{power:.2e}_GS{grid_size}_N{num_steps}_S{separation}_A{angle}_{timestamp}"
-
-    data_filename = os.path.join(output_dir, f"{filename_base}.npz")
-    click.echo(f"Saving full simulation data to {data_filename}...")
-    np.savez_compressed(data_filename, field_history=np.array(field_history_full, dtype=object), sim_params=sim_params)
-    click.echo("Data saved.")
 
     click.echo("Processing animation frames...")
     animation_history = []
@@ -498,6 +507,12 @@ def _run_gate_simulation(inputs, power, grid_size, num_steps, dz, separation, an
         # Integrate over time (Z axis) to show spatial (X-Y) beam profile
         intensity_spatial = np.sum(np.abs(field)**2, axis=2)
         animation_history.append(intensity_spatial)
+
+    # Save the much smaller, processed data for the animation
+    data_filename = os.path.join(output_dir, f"{filename_base}.npz")
+    click.echo(f"Saving processed simulation data to {data_filename}...")
+    np.savez_compressed(data_filename, animation_history=np.array(animation_history), sim_params=sim_params)
+    click.echo("Data saved.")
 
     anim_filename = os.path.join(output_dir, f"{filename_base}.gif")
     animate_simulation(animation_history, sim_params, anim_filename)
@@ -507,10 +522,10 @@ def _run_gate_simulation(inputs, power, grid_size, num_steps, dz, separation, an
 @run_group.command(name='gates')
 @click.option('--power', default=7.3e4, type=float, help='Peak power in Watts. Default is ~P_critical for AlGaAs.')
 @click.option('--grid-size', default=64, type=int, help="Grid resolution for X, Y, and Z axes.")
-@click.option('--num-steps', default=1000, type=int, help="Number of propagation steps.")
+@click.option('--num-steps', default=200, type=int, help="Number of propagation steps.")
 @click.option('--dz', default=None, type=float, help='Propagation step size in meters.')
 @click.option('--separation', default=5e-6, type=float, help='Spatial separation between input beams in meters.')
-@click.option('--angle', default=0.02, type=float, help='Collision angle in radians.')
+@click.option('--angle', default=0.2, type=float, help='Collision angle in radians.')
 @click.option('--pulse-duration', default=50e-15, type=float, help='Duration (std dev) of input pulses in seconds.')
 @click.option('--beam-waist', default=1e-6, type=float, help='Beam waist (radius) in meters.')
 @click.option('--dispersion', default=0.0, type=float, help="GVD (β₂) in ps²/km. Use negative for anomalous.")
@@ -589,24 +604,23 @@ def debug_run(power, grid_size, num_steps, dz, pulse_duration, beam_waist, dispe
 
     initial_field = create_single_pulse_field(sim_params)
 
-    field_history_full = run_nlse_simulation(initial_field, sim_params)
+    field_history_full, initial_energy = run_nlse_simulation(initial_field, sim_params)
     
     os.makedirs(output_dir, exist_ok=True)
     timestamp = time.strftime("%Y%m%d-%H%M%S")
     filename_base = f"debug_run_{material}_P{power:.1f}_D{dispersion:.1f}_diff_{not disable_diffraction}_disp_{not disable_dispersion}_{timestamp}"
     
-    data_filename = os.path.join(output_dir, f"{filename_base}.npz")
-    click.echo(f"Saving full simulation data to {data_filename}...")
-    np.savez_compressed(data_filename, field_history=np.array(field_history_full, dtype=object), sim_params=sim_params)
-    click.echo("Data saved.")
-
     click.echo("Processing animation frames...")
     animation_history = []
     for field in field_history_full:
-        # Integrate over time (Z axis) to show spatial (X-Y) beam profile
-        # This shows how beams propagate and collide in space
+        # Integrate over time (t axis) to show spatial (X-Y) beam profile
         intensity_spatial = np.sum(np.abs(field)**2, axis=2)
         animation_history.append(intensity_spatial)
+
+    data_filename = os.path.join(output_dir, f"{filename_base}.npz")
+    click.echo(f"Saving processed simulation data to {data_filename}...")
+    np.savez_compressed(data_filename, animation_history=np.array(animation_history), sim_params=sim_params)
+    click.echo("Data saved.")
 
     anim_filename = os.path.join(output_dir, f"{filename_base}.gif")
     animate_simulation(animation_history, sim_params, anim_filename)

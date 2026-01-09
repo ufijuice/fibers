@@ -60,10 +60,9 @@ A (3+1)D simulation for optical hopfions.
 
 ### Supporting Scripts
 
-- `recreated_algaas_chip.py`: Appears to be an earlier or alternative version for simulating effects in an AlGaAs chip.
-- `recreated_hopf_soliton.py`: Likely an earlier version of the hopfion simulation.
-- `recreated_hopfion_crystal.py`: Suggests work towards simulating a lattice or crystal of multiple hopfions.
-- `calculate_algaas_params.py`: A utility script for calculating material or simulation parameters specific to AlGaAs.
+- `recreated_algaas_chip.py`: Recreated -- https://journals.aps.org/prxquantum/abstract/10.1103/PRXQuantum.6.010338
+- `recreated_hopf_soliton.py`: Recreated this paper -- https://arxiv.org/html/2504.03981v1
+- `recreated_hopfion_crystal.py`: Recreated this paper -- https://arxiv.org/html/2406.06096v1
 
 ## Setup
 

@@ -58,11 +58,11 @@ A (3+1)D simulation for optical hopfions.
   python hopfion.py run interaction --velocity 5.0 --separation 10.0 --material algaas
   ```
 
-### Supporting Scripts
+### Recreated original papers
 
-- `recreated_algaas_chip.py`: Recreated -- https://journals.aps.org/prxquantum/abstract/10.1103/PRXQuantum.6.010338
-- `recreated_hopf_soliton.py`: Recreated this paper -- https://arxiv.org/html/2504.03981v1
-- `recreated_hopfion_crystal.py`: Recreated this paper -- https://arxiv.org/html/2406.06096v1
+- `recreated_algaas_chip.py`: https://journals.aps.org/prxquantum/abstract/10.1103/PRXQuantum.6.010338
+- `recreated_hopf_soliton.py`: https://arxiv.org/html/2504.03981v1
+- `recreated_hopfion_crystal.py`: https://arxiv.org/html/2406.06096v1
 
 ## Setup
 

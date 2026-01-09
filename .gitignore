@@ -3,3 +3,6 @@ results/
 .DS_store
 *.gif
 *.png
+gemini.md
+PITCH_DECK.*
+calculate_algaas_parameters.py

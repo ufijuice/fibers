@@ -45,9 +45,10 @@ def calculate_optimal_dz(sim_params, target_phase_shift=0.05):
         wavelength = sim_params.get('wavelength', 1.55e-6)
         k0 = 2 * np.pi / wavelength
 
-    # Estimate peak intensity
-    # For Gaussian beams, peak intensity ≈ power / effective_area
-    peak_intensity = power / effective_area
+    # For a Gaussian beam, the relationship between power (P) and peak intensity (I_0)
+    # is P = I_0 * (pi * w_0^2 / 2). The effective area is A_eff = pi * w_0^2.
+    # Therefore, I_0 = 2 * P / A_eff.
+    peak_intensity = 2 * power / effective_area
 
     # Calculate dz for target phase shift
     # φ_NL = k0 * n2 * I * dz
@@ -217,6 +218,45 @@ def animate_simulation(field_history, sim_params, output_filename):
         plt.show()
     plt.close(fig)
 
+
+def animate_temporal_profile(field_history, sim_params, output_filename):
+    """
+    Creates and saves an animated GIF of the soliton's temporal profile.
+    """
+    click.echo(f"Generating temporal animation...")
+    fig, ax = plt.subplots(figsize=(8, 6))
+
+    # Reconstruct time axis from sim_params
+    pulse_duration_s = sim_params['pulse_duration']
+    sim_size_t_s = 10 * pulse_duration_s 
+    t_vis = np.linspace(-sim_size_t_s, sim_size_t_s, len(field_history[0])) * 1e15 # convert to fs
+    
+    ax.set_xlabel('Time (fs)')
+    ax.set_ylabel('Intensity (a.u.)')
+    max_intensity = max(np.max(frame) for frame in field_history) if field_history else 1.0
+    ax.set_ylim(0, max(max_intensity * 1.1, 1e-9))
+    ax.set_xlim(t_vis[0], t_vis[-1])
+
+    line, = ax.plot([], [], lw=2)
+    title = ax.text(0.5, 1.01, '', transform=ax.transAxes, ha="center", fontsize=12)
+
+    def update(frame_index):
+        line.set_data(t_vis, field_history[frame_index])
+        step = frame_index * sim_params.get('store_interval', 1)
+        title.set_text(f'Temporal Profile at Propagation Step {step}')
+        return line, title
+
+    anim = animation.FuncAnimation(fig, update, frames=len(field_history), blit=True, interval=100)
+    
+    try:
+        anim.save(output_filename, writer='pillow', fps=10, dpi=100)
+        click.echo(f"Animation saved to {output_filename}")
+    except Exception as e:
+        click.echo(f"Could not save animation: {e}", err=True)
+        # Fallback to showing the plot if saving fails
+        plt.show()
+    plt.close(fig)
+
 # --- Initial Field Creation ---
 
 def create_single_pulse_field(sim_params):
@@ -273,6 +313,7 @@ def create_collision_field(sim_params):
 
     k0 = sim_params['k0']
     angle, power, effective_area = (sim_params[k] for k in ['angle', 'power', 'effective_area'])
+    phase_b_val = sim_params.get('phase_b', 0.0)
 
     pulse_envelope = np.exp(-T**2 / (2 * pulse_duration_s**2))
     peak_intensity = power / effective_area
@@ -286,7 +327,9 @@ def create_collision_field(sim_params):
     # Beam 2 (starts right, moves left)
     X2 = X - separation / 2
     beam_profile2 = np.exp(-(X2**2 + Y**2) / beam_waist_m**2)
-    E2 = np.sqrt(peak_intensity) * beam_profile2 * pulse_envelope * np.exp(-1j * k_x * X2)
+    phase_exponent_b = -1j * k_x * X2 + 1j * phase_b_val
+    phase_factor_b = np.exp(phase_exponent_b)
+    E2 = np.sqrt(peak_intensity) * beam_profile2 * pulse_envelope * phase_factor_b
 
     sim_params.update({'dx': dx, 'dy': dy, 'dt': dt})
     return E1 + E2
@@ -311,6 +354,7 @@ def create_gate_field(sim_params):
 
     k0 = sim_params['k0']
     power, angle, input_a, input_b, effective_area = (sim_params[k] for k in ['power', 'angle', 'input_a', 'input_b', 'effective_area'])
+    phase_b_val = sim_params.get('phase_b', 0.0)
 
     pulse_envelope = np.exp(-T**2 / (2 * pulse_duration_s**2))
     peak_intensity = power / effective_area
@@ -322,15 +366,15 @@ def create_gate_field(sim_params):
     if input_a == 1:
         X_a = X + separation / 2
         beam_profile_a = np.exp(-(X_a**2 + Y**2) / beam_waist_m**2)
-        # phase_a = np.exp(1j * k_x * X)
         phase_a = np.exp(+1j * k_x * X_a)
         initial_field += np.sqrt(peak_intensity) * beam_profile_a * pulse_envelope * phase_a
     if input_b == 1:
         X_b = X - separation / 2
         beam_profile_b = np.exp(-(X_b**2 + Y**2) / beam_waist_m**2)
-        # phase_b = np.exp(-1j * k_x * X)
-        phase_b = np.exp(-1j * k_x * X_b)
-        initial_field += np.sqrt(peak_intensity) * beam_profile_b * pulse_envelope * phase_b
+        # Combine phase ramp and relative phase in the exponent before calling np.exp
+        phase_exponent_b = -1j * k_x * X_b + 1j * phase_b_val
+        phase_factor_b = np.exp(phase_exponent_b)
+        initial_field += np.sqrt(peak_intensity) * beam_profile_b * pulse_envelope * phase_factor_b
 
     sim_params.update({'dx': dx, 'dy': dy, 'dt': dt})
     return initial_field
@@ -402,34 +446,35 @@ def run_group():
 @click.option('--dz', default=None, type=float, help='Propagation step size in meters.')
 @click.option('--separation', default=5e-6, type=float, help='Initial separation between beams in meters.')
 @click.option('--angle', default=0.2, type=float, help='Collision angle in radians.')
+@click.option('--phase', default=0.0, type=float, help='Relative phase of the second beam in radians.')
 @click.option('--pulse-duration', default=50e-15, type=float, help='Duration (std dev) of input pulses in seconds.')
 @click.option('--beam-waist', default=1e-6, type=float, help='Beam waist (radius) in meters.')
 @click.option('--dispersion', default=-20.0, type=float, help="GVD (β₂) in ps²/km. Use negative for anomalous.")
 @click.option('--material', type=click.Choice(MATERIALS.keys()), default='algaas')
 @click.option('--output-dir', default='results', type=click.Path())
-def run_collision(power, grid_size, num_steps, dz, separation, angle, pulse_duration, beam_waist, dispersion, material, output_dir):
+def run_collision(power, grid_size, num_steps, dz, separation, angle, phase, pulse_duration, beam_waist, dispersion, material, output_dir):
     """Simulates the collision of two spatial soliton pulses, saves data, and visualizes."""
     material_props = MATERIALS[material]
-    if dz is None:
-        k0_temp = 2 * np.pi / 1.55e-6
-        power_safe = power + 1e-12
-        dz_auto = 0.1 / (k0_temp * material_props['n2'] * (power_safe / (np.pi * beam_waist**2)))
-        dz_auto = max(1e-8, min(dz_auto, 1e-5))
-        click.echo(f"Auto-calculated dz = {dz_auto:.6e} (for ~0.1 rad nonlinear phase shift/step)")
-    else:
-        dz_auto = dz
-        click.echo(f"Using user-specified dz = {dz_auto:.6e}")
-
     sim_params = {
         'power': power, 'grid_size': grid_size, 'num_steps': num_steps, 'angle': angle,
-        'separation': separation,
+        'separation': separation, 'phase_b': phase,
         'pulse_duration': pulse_duration, 'beam_waist': beam_waist, 'wavelength': 1.55e-6,
-        'dz': dz_auto, 'store_interval': 1, 'n0': material_props['n0'],
+        'dz': dz, 'store_interval': 1, 'n0': material_props['n0'],
         'n2': material_props['n2'], 'material': material, 'effective_area': np.pi * beam_waist**2,
         'dispersion': dispersion
     }
 
     sim_params.update({'k0': 2 * np.pi / sim_params['wavelength'], 'k': (2 * np.pi / sim_params['wavelength']) * material_props['n0']})
+
+    if dz is None:
+        click.echo("Auto-calculating dz...")
+        dz_auto = calculate_optimal_dz(sim_params)
+        dz_auto = max(1e-8, min(dz_auto, 1e-5)) # Clamp for practical simulation length
+        click.echo(f"Auto-calculated dz = {dz_auto:.6e}")
+    else:
+        dz_auto = dz
+        click.echo(f"Using user-specified dz = {dz_auto:.6e}")
+    sim_params['dz'] = dz_auto
 
     report_simulation_regime(sim_params)
 
@@ -460,31 +505,31 @@ def run_collision(power, grid_size, num_steps, dz, separation, angle, pulse_dura
 
     run_realism_check(sim_params)
 
-def _run_gate_simulation(inputs, power, grid_size, num_steps, dz, separation, angle, pulse_duration, beam_waist, material, output_dir, dispersion):
+def _run_gate_simulation(inputs, power, grid_size, num_steps, dz, separation, angle, pulse_duration, beam_waist, material, output_dir, dispersion, phase_b=0.0):
     """Internal logic for running a single soliton gate simulation."""
     material_props = MATERIALS[material]
     input_a, input_b = int(inputs[0]), int(inputs[2])
-
-    if dz is None:
-        k0_temp = 2 * np.pi / 1.55e-6
-        power_safe = power + 1e-12
-        dz_auto = 0.1 / (k0_temp * material_props['n2'] * (power_safe / (np.pi * beam_waist**2)))
-        dz_auto = max(1e-8, min(dz_auto, 1e-5))
-        click.echo(f"Auto-calculated dz = {dz_auto:.6e} (for ~0.1 rad nonlinear phase shift/step)")
-    else:
-        dz_auto = dz
-        click.echo(f"Using user-specified dz = {dz_auto:.6e}")
 
     sim_params = {
         'power': power, 'grid_size': grid_size, 'num_steps': num_steps,
         'separation': separation, 'angle': angle, 'input_a': input_a, 'input_b': input_b,
         'pulse_duration': pulse_duration, 'beam_waist': beam_waist, 'wavelength': 1.55e-6,
-        'dz': dz_auto, 'store_interval': 1, 'n0': material_props['n0'],
+        'dz': dz, 'store_interval': 1, 'n0': material_props['n0'],
         'n2': material_props['n2'], 'material': material, 'effective_area': np.pi * beam_waist**2,
-        'dispersion': dispersion
+        'dispersion': dispersion, 'phase_b': phase_b
     }
 
     sim_params.update({'k0': 2 * np.pi / sim_params['wavelength'], 'k': (2 * np.pi / sim_params['wavelength']) * material_props['n0']})
+
+    if dz is None:
+        click.echo("Auto-calculating dz...")
+        dz_auto = calculate_optimal_dz(sim_params)
+        dz_auto = max(1e-8, min(dz_auto, 1e-5)) # Clamp for practical simulation length
+        click.echo(f"Auto-calculated dz = {dz_auto:.6e}")
+    else:
+        dz_auto = dz
+        click.echo(f"Using user-specified dz = {dz_auto:.6e}")
+    sim_params['dz'] = dz_auto
 
     report_simulation_regime(sim_params)
 
@@ -521,12 +566,13 @@ def _run_gate_simulation(inputs, power, grid_size, num_steps, dz, separation, an
 @click.option('--dz', default=None, type=float, help='Propagation step size in meters.')
 @click.option('--separation', default=5e-6, type=float, help='Spatial separation between input beams in meters.')
 @click.option('--angle', default=0.2, type=float, help='Collision angle in radians.')
+@click.option('--phase', default=0.0, type=float, help='Relative phase of the second beam in radians.')
 @click.option('--pulse-duration', default=50e-15, type=float, help='Duration (std dev) of input pulses in seconds.')
 @click.option('--beam-waist', default=1e-6, type=float, help='Beam waist (radius) in meters.')
 @click.option('--dispersion', default=0.0, type=float, help="GVD (β₂) in ps²/km. Use negative for anomalous.")
 @click.option('--material', type=click.Choice(MATERIALS.keys()), default='algaas')
 @click.option('--output-dir', default='results', type=click.Path())
-def run_gates(power, grid_size, num_steps, dz, separation, angle, pulse_duration, beam_waist, material, output_dir, dispersion):
+def run_gates(power, grid_size, num_steps, dz, separation, angle, phase, pulse_duration, beam_waist, material, output_dir, dispersion):
     """Runs all three gate simulations (1x1, 1x0, 0x0) sequentially."""
     
     all_inputs = ['1x1', '1x0', '0x0']
@@ -550,10 +596,80 @@ def run_gates(power, grid_size, num_steps, dz, separation, angle, pulse_duration
             beam_waist=beam_waist,
             material=material,
             output_dir=batch_dir_path,
-            dispersion=dispersion
+            dispersion=dispersion,
+            phase_b=phase
         )
     
     click.echo("--- All gate simulations completed. ---")
+
+@run_group.command(name='temporal-profile')
+@click.option('--power', default=1.0, type=float, help='Peak power in Watts.')
+@click.option('--grid-size', default=256, type=int, help='Grid resolution for time axis.')
+@click.option('--num-steps', default=500, type=int, help="Number of propagation steps.")
+@click.option('--dz', default=None, type=float, help='Propagation step size in meters.')
+@click.option('--pulse-duration', default=50e-15, type=float, help='Duration (std dev) of input pulses in seconds.')
+@click.option('--beam-waist', default=1e-6, type=float, help='Beam waist (radius) in meters, used for intensity calculation.')
+@click.option('--dispersion', default=-20.0, type=float, help="GVD (β₂) in ps²/km. Negative for anomalous dispersion.")
+@click.option('--material', type=click.Choice(MATERIALS.keys()), default='silicon')
+@click.option('--output-dir', default='results', type=click.Path())
+def run_temporal_profile(power, grid_size, num_steps, dz, pulse_duration, beam_waist, dispersion, material, output_dir):
+    """Simulates temporal pulse propagation in a waveguide to show dispersion vs. soliton effect."""
+    material_props = MATERIALS[material]
+
+    # This command is for temporal effects, so diffraction is disabled.
+    disable_diffraction = True
+    disable_dispersion = False
+
+    if dz is None:
+        # Calculate reasonable dz based on power if not provided
+        click.echo("Auto-calculating dz...")
+        k0_temp = 2 * np.pi / 1.55e-6
+        power_safe = power + 1e-12
+        # Simplified dz calculation for temporal case
+        dz_auto = 0.1 / (k0_temp * material_props['n2'] * (power_safe / (np.pi * beam_waist**2)))
+        dz_auto = max(1e-8, min(dz_auto, 1e-5)) # Clamping for realistic chip-scale steps
+        click.echo(f"Auto-calculated dz = {dz_auto:.6e} (for ~0.1 rad nonlinear phase shift/step)")
+    else:
+        dz_auto = dz
+        click.echo(f"Using user-specified dz = {dz_auto:.6e}")
+
+    sim_params = {
+        'power': power, 'grid_size': grid_size, 'num_steps': num_steps,
+        'pulse_duration': pulse_duration, 'beam_waist': beam_waist, 'wavelength': 1.55e-6,
+        'dz': dz_auto, 'store_interval': 10, 'n0': material_props['n0'],
+        'n2': material_props['n2'], 'material': material, 'effective_area': np.pi * beam_waist**2,
+        'dispersion': dispersion,
+        'disable_diffraction': disable_diffraction,
+        'disable_dispersion': disable_dispersion
+    }
+    sim_params.update({'k0': 2 * np.pi / sim_params['wavelength'], 'k': (2 * np.pi / sim_params['wavelength']) * material_props['n0']})
+
+    report_simulation_regime(sim_params)
+    initial_field = create_single_pulse_field(sim_params)
+    field_history_full, initial_energy = run_nlse_simulation(initial_field, sim_params)
+    
+    os.makedirs(output_dir, exist_ok=True)
+    timestamp = time.strftime("%Y%m%d-%H%M%S")
+    filename_base = f"temporal_profile_{material}_P{power:.2e}_D{dispersion:.1f}_{timestamp}"
+    
+    click.echo("Processing for temporal animation...")
+    animation_history = []
+    center_idx = grid_size // 2
+    for field in field_history_full:
+        # Take a slice at the center of the beam to see the temporal profile
+        intensity_temporal = np.abs(field[center_idx, center_idx, :])**2
+        animation_history.append(intensity_temporal)
+
+    data_filename = os.path.join(output_dir, f"{filename_base}.npz")
+    click.echo(f"Saving processed simulation data to {data_filename}...")
+    np.savez_compressed(data_filename, animation_history=np.array(animation_history), sim_params=sim_params)
+    click.echo("Data saved.")
+
+    anim_filename = os.path.join(output_dir, f"{filename_base}.gif")
+    animate_temporal_profile(animation_history, sim_params, anim_filename)
+
+    run_realism_check(sim_params)
+
 
 @run_group.command(name='debug-run')
 @click.option('--power', default=7.3e4, type=float, help='Peak power in Watts.')

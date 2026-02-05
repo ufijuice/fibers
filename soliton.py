@@ -8,18 +8,18 @@ import time
 
 # --- Material Library (with Two-Photon Absorption coefficients) ---
 MATERIALS = {
-    # beta_tpa is in m/W
-    'algaas': {'n0': 3.3, 'n2': 1e-17, 'beta_tpa': 1.5e-11},
-    'silica': {'n0': 1.44, 'n2': 2.6e-20, 'beta_tpa': 0},
-    'bk7': {'n0': 1.50, 'n2': 3.45e-20, 'beta_tpa': 0},
-    'sapphire': {'n0': 1.75, 'n2': 3.0e-20, 'beta_tpa': 0},
-    'zns': {'n0': 2.27, 'n2': 7.9e-18, 'beta_tpa': 5e-11},
-    'silicon': {'n0': 3.48, 'n2': 6e-18, 'beta_tpa': 5e-12},
-    'silicon_nitride': {'n0': 2.0, 'n2': 2.4e-19, 'beta_tpa': 0},
-    'inp': {'n0': 3.17, 'n2': 1.5e-17, 'beta_tpa': 1e-12},
-    'gaas': {'n0': 3.38, 'n2': 1.5e-17, 'beta_tpa': 1.5e-11},
-    'linbo3': {'n0': 2.14, 'n2': 1.0e-19, 'beta_tpa': 0},
-    'diamond': {'n0': 2.39, 'n2': 1.3e-19, 'beta_tpa': 0},
+    # beta_tpa is in m/W, typical_wavelength in meters, typical_dispersion in ps^2/km
+    'algaas': {'n0': 3.3, 'n2': 1e-17, 'beta_tpa': 1.5e-11, 'typical_wavelength': 1.55e-6, 'typical_dispersion': -20.0},
+    'silica': {'n0': 1.44, 'n2': 2.6e-20, 'beta_tpa': 0, 'typical_wavelength': 1.55e-6, 'typical_dispersion': -28.0},
+    'bk7': {'n0': 1.50, 'n2': 3.45e-20, 'beta_tpa': 0, 'typical_wavelength': 1.06e-6, 'typical_dispersion': -10.0},
+    'sapphire': {'n0': 1.75, 'n2': 3.0e-20, 'beta_tpa': 0, 'typical_wavelength': 0.8e-6, 'typical_dispersion': -5.0},
+    'zns': {'n0': 2.27, 'n2': 7.9e-18, 'beta_tpa': 5e-11, 'typical_wavelength': 2.0e-6, 'typical_dispersion': -100.0},
+    'silicon': {'n0': 3.48, 'n2': 6e-18, 'beta_tpa': 5e-12, 'typical_wavelength': 1.55e-6, 'typical_dispersion': -50.0},
+    'silicon_nitride': {'n0': 2.0, 'n2': 2.4e-19, 'beta_tpa': 0, 'typical_wavelength': 1.55e-6, 'typical_dispersion': -30.0},
+    'inp': {'n0': 3.17, 'n2': 1.5e-17, 'beta_tpa': 1e-12, 'typical_wavelength': 1.55e-6, 'typical_dispersion': -40.0},
+    'gaas': {'n0': 3.38, 'n2': 1.5e-17, 'beta_tpa': 1.5e-11, 'typical_wavelength': 1.55e-6, 'typical_dispersion': -35.0},
+    'linbo3': {'n0': 2.14, 'n2': 1.0e-19, 'beta_tpa': 0, 'typical_wavelength': 1.55e-6, 'typical_dispersion': -20.0},
+    'diamond': {'n0': 2.39, 'n2': 1.3e-19, 'beta_tpa': 0, 'typical_wavelength': 0.532e-6, 'typical_dispersion': -5.0},
 }
 
 # --- Core Simulation & Visualization Logic ---
@@ -441,6 +441,7 @@ def run_group():
 
 @run_group.command(name='collision')
 @click.option('--power', default=7.3e4, type=float, help='Peak power in Watts. Default is ~P_critical for AlGaAs.')
+@click.option('--wavelength', default=1.55e-6, type=float, help='Wavelength in meters.')
 @click.option('--grid-size', default=128, type=int, help="Grid resolution for X, Y, and T axes.")
 @click.option('--num-steps', default=200, type=int, help="Number of propagation steps.")
 @click.option('--dz', default=None, type=float, help='Propagation step size in meters.')
@@ -452,13 +453,13 @@ def run_group():
 @click.option('--dispersion', default=-20.0, type=float, help="GVD (β₂) in ps²/km. Use negative for anomalous.")
 @click.option('--material', type=click.Choice(MATERIALS.keys()), default='algaas')
 @click.option('--output-dir', default='results', type=click.Path())
-def run_collision(power, grid_size, num_steps, dz, separation, angle, phase, pulse_duration, beam_waist, dispersion, material, output_dir):
+def run_collision(power, wavelength, grid_size, num_steps, dz, separation, angle, phase, pulse_duration, beam_waist, dispersion, material, output_dir):
     """Simulates the collision of two spatial soliton pulses, saves data, and visualizes."""
     material_props = MATERIALS[material]
     sim_params = {
         'power': power, 'grid_size': grid_size, 'num_steps': num_steps, 'angle': angle,
         'separation': separation, 'phase_b': phase,
-        'pulse_duration': pulse_duration, 'beam_waist': beam_waist, 'wavelength': 1.55e-6,
+        'pulse_duration': pulse_duration, 'beam_waist': beam_waist, 'wavelength': wavelength,
         'dz': dz, 'store_interval': 1, 'n0': material_props['n0'],
         'n2': material_props['n2'], 'material': material, 'effective_area': np.pi * beam_waist**2,
         'dispersion': dispersion
@@ -483,8 +484,7 @@ def run_collision(power, grid_size, num_steps, dz, separation, angle, phase, pul
     field_history_full, initial_energy = run_nlse_simulation(initial_field, sim_params)
     
     os.makedirs(output_dir, exist_ok=True)
-    timestamp = time.strftime("%Y%m%d-%H%M%S")
-    filename_base = f"soliton_collision_{material}_P{power:.2e}_GS{grid_size}_N{num_steps}_A{angle}_{timestamp}"
+    filename_base = f"soliton_collision_{material}_P{power:.2e}_GS{grid_size}_N{num_steps}_A{angle:.3f}"
     
     click.echo("Processing animation frames...")
     animation_history = []
@@ -505,7 +505,7 @@ def run_collision(power, grid_size, num_steps, dz, separation, angle, phase, pul
 
     run_realism_check(sim_params)
 
-def _run_gate_simulation(inputs, power, grid_size, num_steps, dz, separation, angle, pulse_duration, beam_waist, material, output_dir, dispersion, phase_b=0.0):
+def _run_gate_simulation(inputs, power, grid_size, num_steps, dz, separation, angle, pulse_duration, beam_waist, material, output_dir, dispersion, phase_b=0.0, wavelength=1.55e-6):
     """Internal logic for running a single soliton gate simulation."""
     material_props = MATERIALS[material]
     input_a, input_b = int(inputs[0]), int(inputs[2])
@@ -513,7 +513,7 @@ def _run_gate_simulation(inputs, power, grid_size, num_steps, dz, separation, an
     sim_params = {
         'power': power, 'grid_size': grid_size, 'num_steps': num_steps,
         'separation': separation, 'angle': angle, 'input_a': input_a, 'input_b': input_b,
-        'pulse_duration': pulse_duration, 'beam_waist': beam_waist, 'wavelength': 1.55e-6,
+        'pulse_duration': pulse_duration, 'beam_waist': beam_waist, 'wavelength': wavelength,
         'dz': dz, 'store_interval': 1, 'n0': material_props['n0'],
         'n2': material_props['n2'], 'material': material, 'effective_area': np.pi * beam_waist**2,
         'dispersion': dispersion, 'phase_b': phase_b
@@ -538,8 +538,7 @@ def _run_gate_simulation(inputs, power, grid_size, num_steps, dz, separation, an
     field_history_full, initial_energy = run_nlse_simulation(initial_field, sim_params)
 
     os.makedirs(output_dir, exist_ok=True)
-    timestamp = time.strftime("%Y%m%d-%H%M%S")
-    filename_base = f"soliton_gate_{inputs}_{material}_P{power:.2e}_GS{grid_size}_N{num_steps}_S{separation}_A{angle}_{timestamp}"
+    filename_base = f"soliton_gate_{inputs}_{material}_P{power:.2e}_GS{grid_size}_N{num_steps}_S{separation}_A{angle:.3f}"
 
     click.echo("Processing animation frames...")
     animation_history = []
@@ -561,6 +560,7 @@ def _run_gate_simulation(inputs, power, grid_size, num_steps, dz, separation, an
 
 @run_group.command(name='gates')
 @click.option('--power', default=7.3e4, type=float, help='Peak power in Watts. Default is ~P_critical for AlGaAs.')
+@click.option('--wavelength', default=1.55e-6, type=float, help='Wavelength in meters.')
 @click.option('--grid-size', default=64, type=int, help="Grid resolution for X, Y, and Z axes.")
 @click.option('--num-steps', default=200, type=int, help="Number of propagation steps.")
 @click.option('--dz', default=None, type=float, help='Propagation step size in meters.')
@@ -572,7 +572,7 @@ def _run_gate_simulation(inputs, power, grid_size, num_steps, dz, separation, an
 @click.option('--dispersion', default=0.0, type=float, help="GVD (β₂) in ps²/km. Use negative for anomalous.")
 @click.option('--material', type=click.Choice(MATERIALS.keys()), default='algaas')
 @click.option('--output-dir', default='results', type=click.Path())
-def run_gates(power, grid_size, num_steps, dz, separation, angle, phase, pulse_duration, beam_waist, material, output_dir, dispersion):
+def run_gates(power, wavelength, grid_size, num_steps, dz, separation, angle, phase, pulse_duration, beam_waist, material, output_dir, dispersion):
     """Runs all three gate simulations (1x1, 1x0, 0x0) sequentially."""
     
     all_inputs = ['1x1', '1x0', '0x0']
@@ -597,13 +597,15 @@ def run_gates(power, grid_size, num_steps, dz, separation, angle, phase, pulse_d
             material=material,
             output_dir=batch_dir_path,
             dispersion=dispersion,
-            phase_b=phase
+            phase_b=phase,
+            wavelength=wavelength
         )
     
     click.echo("--- All gate simulations completed. ---")
 
 @run_group.command(name='temporal-profile')
 @click.option('--power', default=1.0, type=float, help='Peak power in Watts.')
+@click.option('--wavelength', default=1.55e-6, type=float, help='Wavelength in meters.')
 @click.option('--grid-size', default=256, type=int, help='Grid resolution for time axis.')
 @click.option('--num-steps', default=500, type=int, help="Number of propagation steps.")
 @click.option('--dz', default=None, type=float, help='Propagation step size in meters.')
@@ -612,7 +614,7 @@ def run_gates(power, grid_size, num_steps, dz, separation, angle, phase, pulse_d
 @click.option('--dispersion', default=-20.0, type=float, help="GVD (β₂) in ps²/km. Negative for anomalous dispersion.")
 @click.option('--material', type=click.Choice(MATERIALS.keys()), default='silicon')
 @click.option('--output-dir', default='results', type=click.Path())
-def run_temporal_profile(power, grid_size, num_steps, dz, pulse_duration, beam_waist, dispersion, material, output_dir):
+def run_temporal_profile(power, wavelength, grid_size, num_steps, dz, pulse_duration, beam_waist, dispersion, material, output_dir):
     """Simulates temporal pulse propagation in a waveguide to show dispersion vs. soliton effect."""
     material_props = MATERIALS[material]
 
@@ -623,7 +625,7 @@ def run_temporal_profile(power, grid_size, num_steps, dz, pulse_duration, beam_w
     if dz is None:
         # Calculate reasonable dz based on power if not provided
         click.echo("Auto-calculating dz...")
-        k0_temp = 2 * np.pi / 1.55e-6
+        k0_temp = 2 * np.pi / wavelength
         power_safe = power + 1e-12
         # Simplified dz calculation for temporal case
         dz_auto = 0.1 / (k0_temp * material_props['n2'] * (power_safe / (np.pi * beam_waist**2)))
@@ -635,7 +637,7 @@ def run_temporal_profile(power, grid_size, num_steps, dz, pulse_duration, beam_w
 
     sim_params = {
         'power': power, 'grid_size': grid_size, 'num_steps': num_steps,
-        'pulse_duration': pulse_duration, 'beam_waist': beam_waist, 'wavelength': 1.55e-6,
+        'pulse_duration': pulse_duration, 'beam_waist': beam_waist, 'wavelength': wavelength,
         'dz': dz_auto, 'store_interval': 10, 'n0': material_props['n0'],
         'n2': material_props['n2'], 'material': material, 'effective_area': np.pi * beam_waist**2,
         'dispersion': dispersion,
@@ -649,8 +651,7 @@ def run_temporal_profile(power, grid_size, num_steps, dz, pulse_duration, beam_w
     field_history_full, initial_energy = run_nlse_simulation(initial_field, sim_params)
     
     os.makedirs(output_dir, exist_ok=True)
-    timestamp = time.strftime("%Y%m%d-%H%M%S")
-    filename_base = f"temporal_profile_{material}_P{power:.2e}_D{dispersion:.1f}_{timestamp}"
+    filename_base = f"temporal_profile_{material}_P{power:.2e}_D{dispersion:.1f}"
     
     click.echo("Processing for temporal animation...")
     animation_history = []
@@ -673,6 +674,7 @@ def run_temporal_profile(power, grid_size, num_steps, dz, pulse_duration, beam_w
 
 @run_group.command(name='debug-run')
 @click.option('--power', default=7.3e4, type=float, help='Peak power in Watts.')
+@click.option('--wavelength', default=1.55e-6, type=float, help='Wavelength in meters.')
 @click.option('--grid-size', default=64, type=int)
 @click.option('--num-steps', default=100, type=int)
 @click.option('--dz', default=None, type=float, help='Propagation step size in meters.')
@@ -683,14 +685,14 @@ def run_temporal_profile(power, grid_size, num_steps, dz, pulse_duration, beam_w
 @click.option('--disable-diffraction', is_flag=True, help="Turn off spatial diffraction.")
 @click.option('--disable-dispersion', is_flag=True, help="Turn off temporal dispersion (GVD).")
 @click.option('--output-dir', default='results', type=click.Path())
-def debug_run(power, grid_size, num_steps, dz, pulse_duration, beam_waist, dispersion, material, disable_diffraction, disable_dispersion, output_dir):
+def debug_run(power, wavelength, grid_size, num_steps, dz, pulse_duration, beam_waist, dispersion, material, disable_diffraction, disable_dispersion, output_dir):
     """Runs a single pulse simulation with options to disable physics for debugging."""
     material_props = MATERIALS[material]
 
     if dz is None:
         # Calculate reasonable dz based on power if not provided
         click.echo("Auto-calculating dz...")
-        k0_temp = 2 * np.pi / 1.55e-6
+        k0_temp = 2 * np.pi / wavelength
         power_safe = power + 1e-12
         dz_auto = 0.1 / (k0_temp * material_props['n2'] * (power_safe / (np.pi * beam_waist**2)))
         dz_auto = max(1e-8, min(dz_auto, 1e-5)) # Clamping for realistic chip-scale steps
@@ -701,7 +703,7 @@ def debug_run(power, grid_size, num_steps, dz, pulse_duration, beam_waist, dispe
 
     sim_params = {
         'power': power, 'grid_size': grid_size, 'num_steps': num_steps,
-        'pulse_duration': pulse_duration, 'beam_waist': beam_waist, 'wavelength': 1.55e-6,
+        'pulse_duration': pulse_duration, 'beam_waist': beam_waist, 'wavelength': wavelength,
         'dz': dz_auto, 'store_interval': 10, 'n0': material_props['n0'],
         'n2': material_props['n2'], 'material': material, 'effective_area': np.pi * beam_waist**2,
         'dispersion': dispersion,

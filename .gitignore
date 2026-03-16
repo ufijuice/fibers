@@ -1,11 +1,9 @@
 results/
+misc/
 *.pdf
 .DS_store
 *.gif
 *.png
 gemini.md
-PITCH_DECK.*
 calculate_algaas_parameters.py
-ONE_PAGER*
-soliton_PD*
 venv/

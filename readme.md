@@ -2,6 +2,12 @@
 
 This repository contains Python scripts for simulating nonlinear photonic phenomena, specifically focusing on spatial solitons and hopfions. These simulations are based on solving the Nonlinear Schrödinger Equation (NLSE) and the Vector NLSE using the split-step Fourier method.
 
+## Vision & Long-Term Goal
+This project explores soliton-based photonic platforms and optical hopfions as building blocks for next-generation computing. The core idea is to encode symbolic information directly into the topology of 3D structures (hopfions), moving beyond binary or simple analog representations. Distinct hopfion configurations act as "letters" or symbols, enabling more natural mapping between symbolic reasoning and physical substrate. Combined with dense soliton photonic interconnects, this approach aims to create significantly more energy-efficient and compact hardware — a step toward brain-like artificial intelligence.Key Differentiators:Native topological encoding for symbolic + neural hybrid systems
+Soliton-based photonic platform targeting lower energy and higher integration density
+Bridging abstract mathematics (topology) with practical photonic simulation
+
+
 ## Core Concepts
 
 - **Solitons**: Self-reinforcing wave packets that maintain their shape while propagating at a constant velocity. In this context, they are formed when the nonlinear Kerr effect (self-focusing) perfectly balances with linear effects like diffraction and dispersion. They are robust and can interact, making them candidates for information carriers in all-optical computing.

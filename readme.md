@@ -1,87 +1,51 @@
-# Photonic Simulations
+# Photonic computing research
 
-This repository contains Python scripts for simulating nonlinear photonic phenomena, specifically focusing on spatial solitons and hopfions. These simulations are based on solving the Nonlinear Schrödinger Equation (NLSE) and the Vector NLSE using the split-step Fourier method.
+This workspace contains exploratory photonic simulations and the current proposal for a **modular photonic NPU**: programmable optical computation supported by electronic memory and control.
 
-## Core Concepts
+## Current presentation
 
-- **Solitons**: Self-reinforcing wave packets that maintain their shape while propagating at a constant velocity. In this context, they are formed when the nonlinear Kerr effect (self-focusing) perfectly balances with linear effects like diffraction and dispersion. They are robust and can interact, making them candidates for information carriers in all-optical computing.
-- **Hopfions**: Three-dimensional topological solitons, which are particle-like knots in a physical field. They are characterized by a topological invariant called the Hopf index. Their complex, stable, 3D structure suggests potential for high-density, multi-level information storage and processing, moving beyond binary systems.
+Start with [the presentation index](misc/presentation/README.md).
 
-## Scripts
+- [Pitch deck](misc/presentation/photonic_npu_preseed.pdf)
+- [One-page overview](misc/presentation/photonic_npu_one_pager.pdf)
+- [Technical and funding assumptions](misc/presentation/photonic_npu_diligence.md)
+- [Editable feasibility budget](misc/presentation/preseed_budget.py)
 
-### `soliton.py`
+The proposed first device is an 8×8 matrix–vector compute tile using a soliton microcomb as its source. Numerical precision, complete-system power, a useful workload and a competitive advantage remain to be established. The existing simulation and generic-PDK layout examples are research preparation; they are not a measured NPU or a foundry-qualified implementation.
 
-A (3+1)D simulation for spatial solitons in a Kerr medium. It models the propagation of pulsed light beams.
+The working ask is $750k for a 15-month feasibility program. Earlier light-source and retina pitches and their sales models are [archived](misc/presentation/archive/README.md); their forecasts do not apply to the NPU.
 
-**Features:**
-- Solves the (3+1)D Nonlinear Schrödinger Equation.
-- Includes diffraction, group velocity dispersion (GVD), and the Kerr effect.
-- Simulates single pulses, two-pulse collisions, and basic logic gates (e.g., an AND gate where two solitons collide).
-- Provides physical realism checks (e.g., peak intensity, fluence, carrier density) to ground the simulation parameters.
-- Generates animated GIFs of the simulations.
-- Material library with properties for AlGaAs, Silicon, Silica, etc.
+## Repository map
 
-**Usage:**
-The script uses `click` for its command-line interface.
+| Location | Purpose |
+|---|---|
+| misc/presentation/ | Current deck, one-pager, diligence, budget, build script and outreach draft |
+| misc/presentation/archive/ | Earlier pitches and analyses, preserved locally with a movement manifest |
+| misc/ | Earlier generic-PDK microcomb/retina layout experiments |
+| references/ | Paper index and local PDF copies |
+| docs/simulations.md | Existing simulation scripts, setup and usage |
+| results/ | Generated output; older root figures are in results/legacy-root/ |
 
-- **Run a two-soliton collision:**
-  ```bash
-  python soliton.py run collision --power 7.3e4 --angle 0.2 --material algaas
-  ```
-- **Run a batch of logic gate simulations (1x1, 1x0, 0x0):**
-  ```bash
-  python soliton.py run gates --power 7.3e4 --separation 5e-6 --material algaas
-  ```
-- **Run a debug simulation of a single pulse:**
-  ```bash
-  python soliton.py run debug-run --power 7.3e4 --disable-diffraction
-  ```
+Core simulation entry points retain their paths: soliton.py, hopfion.py, run_experiments.py and the recreated_* scripts. The NPU program does not depend on proving the longer-term Hopfion-computing idea.
 
-### `hopfion.py`
+## Build the presentation
 
-A (3+1)D simulation for optical hopfions.
+Requires Python 3 and a working pdflatex installation:
 
-**Features:**
-- Solves the 3D Vector NLSE.
-- Creates initial conditions for single hopfions and interacting pairs.
-- Visualizes the 3D structure of the hopfion using `marching_cubes`, coloring the surface by polarization (S3 parameter).
-- Simulates the interaction (collision) of two hopfions.
+    python3 misc/presentation/build.py
 
-**Usage:**
+The build regenerates the numerical budget, compiles the two PDFs and keeps LaTeX intermediates in misc/presentation/build/. It does not install packages.
 
-- **Run a single, stationary hopfion simulation:**
-  ```bash
-  python hopfion.py run single --power 6.87e3 --grid-size 128 --material algaas
-  ```
-- **Run a two-hopfion interaction:**
-  ```bash
-  python hopfion.py run interaction --velocity 5.0 --separation 10.0 --material algaas
-  ```
+## Run the simulations
 
-### Recreated original papers
+Create or activate an environment and install the [simulation requirements](requirements.txt):
 
-- `recreated_algaas_chip.py`: https://journals.aps.org/prxquantum/abstract/10.1103/PRXQuantum.6.010338
-- `recreated_hopf_soliton.py`: https://arxiv.org/html/2504.03981v1
-- `recreated_hopfion_crystal.py`: https://arxiv.org/html/2406.06096v1
+    python3 -m venv venv
+    source venv/bin/activate
+    python -m pip install -r requirements.txt
+    python soliton.py --help
+    python hopfion.py --help
 
-## Setup
+See [simulation notes](docs/simulations.md) for examples and limitations. Layout experiments need additional dependencies described in [misc/README.md](misc/README.md).
 
-1.  **Create a virtual environment:**
-    ```bash
-    python -m venv venv
-    source venv/bin/activate  # On Windows, use `venv\Scripts\activate`
-    ```
-
-2.  **Install dependencies:**
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-## Project Goals
-
-- **Short-Term**: Investigate soliton interactions (collisions, logic gates) as a potential mechanism for all-optical signal processing and bandwidth acceleration. The `soliton.py` script is the primary tool for this exploration.
-- **Long-Term**: Explore the creation, stability, and interaction of 3D optical hopfions. Their topological nature could offer a robust foundation for novel, non-binary (analog) computing paradigms, where information is encoded in the hopfion's complex 3D state. The `hopfion.py` script serves this long-term vision.
-
-## Results
-
-Simulation outputs (NPZ data files, PNG images, and GIFs) are saved in the `results/` directory by default. Each run is typically timestamped to avoid overwriting.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidance.

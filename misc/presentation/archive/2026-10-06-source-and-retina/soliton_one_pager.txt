@@ -1,0 +1,32 @@
+SOLITON MICROCOMBS
+Multi-wavelength light sources for optical interconnects
+Pavel Chekmaryov | p@occurai.com | October 2026
+
+THE OPPORTUNITY
+Optical interconnects need several stable wavelengths of light. We are developing a module that uses one pump laser and a microcomb chip to generate many wavelengths. The goal is to reduce light-source cost and power while meeting the customer's requirements.
+
+THE FIRST PRODUCT
+Gen 1 combines an external pump, a microresonator chip, filters, and control electronics. Our first target is 16 usable wavelengths at the required spacing and output power. We then aim for 32–50 wavelengths if the optical power and customer requirements allow it.
+
+WHY THIS CAN WIN
+We will compare our module with existing multi-wavelength sources, including Ayar SuperNova and Lightmatter Guide. We aim for lower cost, reliable automatic operation, repeatable manufacturing, and compatibility with customer systems. The improvement must be measured.
+
+CURRENT STAGE
+The work starts from chip design and simulations. This presentation does not claim measured module performance or signed customer orders. The next steps are fabrication and lab quotes, requirements from potential customers, and a technical co-founder or photonics engineer.
+
+COMMERCIAL PLAN
+We plan to sell packaged modules, starting with paid test samples in Year 2 and production after customer approval. The Year 5 base case is 2,500 modules at $3,500 each: $8.75M revenue. Target manufacturing cost is $1,575/module, giving 55% gross margin. Slower and faster sales cases give $1.75M and $24.5M in Year 5. These are planning assumptions, not orders.
+
+THE RAISE
+$750k pre-seed for a 15-month prototype program.
+People/specialists $250k; fabrication/packaging $220k; lab/test $100k; operations/IP $65k; contingency $115k.
+This funds a working lab prototype, automatic control, measured output and power, a manufacturing cost estimate, and outside testing. It assumes a small team and shared lab equipment. Later funding supports customer approval and initial production; the base-case plan allows roughly $9–12M in total funding, including this round.
+
+EXECUTION
+Pavel Chekmaryov brings hardware/software experience, including Snowcap Compute, technical recruitment, startup operations, and product development. The current materials name Anton Velichko (University of Sheffield) for scientific guidance; his engagement and public attribution need confirmation. We are looking for a technical co-founder or photonics engineer with hands-on chip, packaging, and optical-testing experience.
+
+LONG-TERM DIRECTION
+A photonic retina could combine a detector array with photonic processing to extract features close to the sensor. The first experiment would detect a simple pattern and compare accuracy, power, and sensing-to-result time with an electronic setup. Hopfion computing remains a longer-term research direction. Both need separate experiments and funding; neither contributes revenue to this plan.
+
+All amounts USD. Years start at financing close. Acquisition is a possible outcome, without an assumed buyer, date, or price.
+Sources: https://ayarlabs.com/supernova ; https://lightmatter.co/wp-content/uploads/2025/08/57-lightmatter_hotchips_2025_final.pdf ; https://www.nature.com/articles/s41586-022-04714-0

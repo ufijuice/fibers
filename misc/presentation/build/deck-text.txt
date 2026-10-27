@@ -1,0 +1,242 @@
+                            AModularPhotonic NPU
+                   Programmable optical computation with electronic control
+                                   Pavel Chekmaryov
+                                      p@occurai.com
+                                     October 2026
+                   Asoliton microcomb supplies parallel channels.
+               Aprogrammableoptical core performs the computation.
+                      $750kpre-seed | 15-monthfeasibility program
+   Photonic NPU | Development proposal | October 2026                            1
+  First Workload: Repeated Inference
+  Theusecasewewilltest
+  Repeated matrix–vector projections in a small inference model: one input vector at a time, with
+  weights reused across a continuous stream.
+      Prospective users: teams building real-time sensing and control hardware.
+      They need useful prediction accuracy within a defined response-time and power budget.
+      Theopportunity depends on the complete system: loading inputs, computing, reading outputs,
+      andapplying the next operation.
+  First commercial question
+  Which recurring layer is important enough for a hardware team to evaluate a dedicated processor?
+  Initial application hypothesis. The task and buyer requirements will be selected during the first phase.
+   Photonic NPU | Development proposal | October 2026                            2
+   TheProduct: A Photonic Compute Core
+                    Soliton         Input modulators          Optical            Balanced
+                  microcomb             encode             weight banks          detectors
+                parallel carriers      the vector        multiply and sum      read the result
+                                                    Electronics: vector buffers,
+                                                    converters, weight control,
+                                          calibration, nonlinear activations and scheduling
+                                      Optical arithmetic: y = Wx
+   Thefirst owned chip is the compute core. Gen 1 uses an existing or shared microcomb source and
+                                          external test electronics.
+                     Proposed architecture. A later chiplet or SoC can integrate more of the system.
+    Photonic NPU | Development proposal | October 2026                                                  3
+  Our First Design Hypothesis: Useful Precision in One Pass
+   Whatweaimtoimprove
+   Meet a chosen inference-accuracy requirement without repeating and averaging the same optical
+   calculation.
+   Engineering work                                  Whythiscouldmatter
+        Model source power, coupling loss and             Fewer repeated measurements could
+        receiver noise together.                          reduce latency and energy per useful
+        Set receiver gain and bandwidth for the           result.
+        actual vector rate.                               Reusing loaded weights could reduce
+        Calibrate optical weights, signed readout         repeated programming and data
+        andchannel crosstalk.                             movement.
+                                                          Thegainmustsurvive converter and
+                                                          control overhead.
+   Atestable design hypothesis. The noise model and bench measurements must establish the improvement.
+    Photonic NPU | Development proposal | October 2026                                             4
+  First Hardware: An 8×8 Test Tile
+   Computechip                                        Part            Implementation
+        Eight optical input channels and eight        Source          Existing SiN soliton source;
+        logical outputs.                                              external pump
+                                                      Compute         Silicon-on-insulator modulators
+        Programmable weights; balanced                                and weight banks
+        readout for signed weights.                   Readout         Foundry-supported Ge/SiGe
+        Monitor taps and calibration structures.                      photodetectors
+                                                      Control         CMOSelectronics; FPGA and
+        Repeated tiles with short receiver                            SRAMduringprototyping
+        connections.
+   Starting band: around 1550 nm, subject to source and foundry compatibility. The base round
+   funds one new compute-chip fabrication.
+   8×8isaworkingprototype scale. Final dimensions, spacing and device choices require a foundry PDK and design review.
+    Photonic NPU | Development proposal | October 2026                                               5
+   WhatthePrototype Must Establish
+    Test                         Workingacceptancetarget / measurement
+    Optical arithmetic           ≤5%normalizedMVMerroronalockedtestset,inasinglepass.
+    Inference quality            ≤1percentage-point accuracy loss versus the same digital model on
+                                 the chosen task.
+    Latency and energy           Measure digital input-buffer to output-buffer time and total module       Thetile
+                                 power, including source, converters and controls.
+    Repeatability                Repeat calibration, startup and sustained operation under defined
+                                 laboratory conditions.
+    Electronic baseline          ComparethesametaskwithanoptimizedCPUandanappropriate
+                                 FPGAorelectronic NPU; include a GPU where relevant.
+   validates the physical model. A measured small-tile result and a conservative scaling model guide the next
+   processor.
+   Targets are proposed, not achieved. Lock the test protocol after the initial noise model and quotes, before fabrication.
+    Photonic NPU | Development proposal | October 2026                                                            6
+   Existing Work and Where We Must Add Value
+    Reference                  Whatisalreadyestablished                       Ourimplication
+    Feldmann et al.,           Soliton-microcomb photonic                     Thebasic architecture has
+    2021                       multiply–accumulate hardware.                  precedent.
+    Meyer et al., 2026         Areprogrammable 9×3microcomb                   Precision, readout and
+                               processor; Enlightra contributes to the        complete-system cost are
+                               research.                                      relevant benchmarks.
+    Huaetal., 2025             Larger photonic–electronic compute             Packaging and electronic
+                               integration for low-latency workloads.         support are part of the
+                                                                              processor.
+   Our contribution must be demonstrated
+   Aspecific readout, calibration or integration improvement that meets the chosen task’s accuracy
+   andoperating budget.
+   Electronic NPUs and FPGAs are alternatives. Soliton use alone is not differentiation.
+   Source: Meyer et al. (2026); Feldmann et al. and Hua et al. linked in the evidence appendix
+    Photonic NPU | Development proposal | October 2026                                                            7
+   First Customers and Commercial Path
+   Initial customer hypothesis
+   Hardware teams with a recurring dense inference layer and a demanding response-time or energy
+   budget. First discussions should establish the task, interface, accuracy and purchasing decision.
+     1  Specify: agree a representative workload and electronic baseline with a potential evaluator.
+     2  Demonstrate: test a packaged compute tile and its software interface.
+     3  Evaluate: obtain outside measurements and a defined next integration decision.
+     4  Productize: supply compute modules; pursue chiplet or IP integration when justified by
+        demand.
+   Nocustomeragreementisclaimed. Prices, unit volumes and production margins will follow an actual module specification
+   and evaluation route.
+    Photonic NPU | Development proposal | October 2026                                                            8
+  15-Month Feasibility Program
+   Window     Deliverable and decision
+   M0–3       Secure technical lead and lab/source access; obtain quotes; select task,
+              accuracy target and comparison boundary.
+   M3–6       Build loss/noise model and electronic baseline; review PDK design and
+              packaging; commit to fabrication only within the funded scope.
+   M6–10      Fabrication and assembly; prepare source, receiver, converters and test
+              software in parallel.
+   M10–13     Bring up optical arithmetic; calibrate weights and readout; measure
+              precision and stability.
+   M13–15     Runthelocked task and outside review; estimate scaling and module
+              cost; choose the next design or revise the architecture.
+  Timing depends on foundry turnaround and equipment access. Begin follow-on discussions around M8–10; financing is not
+  assumed.
+   Photonic NPU | Development proposal | October 2026              9
+  TeamandStarting Point
+  Pavel Chekmaryov — Founder
+  Experience at Snowcap Compute; exploratory work on topological features for machine learning,
+  nonlinear-optics simulations and photonic layouts.
+  Seeking a technical co-founder or photonics engineer
+  Hands-on experience in photonic compute, foundry design, packaging and optical testing.
+  Specialist electronics and test support are also required.
+      Existing repository work supports exploration and preparation.
+      This NPU’s arithmetic, power and latency remain to be measured.
+      Technical staffing, laboratory access and fabrication support are early execution milestones.
+  Advisor names and affiliations will be added after their role and public attribution are confirmed.
+   Photonic NPU | Development proposal | October 2026                           10
+   FromComputeTiletoPhotonic–Electronic SoC
+     1  Test chip: a small programmable optical computation with a defined error budget.
+     2  Computemodule: larger or repeated tiles, memory, converters, software and a useful
+        workload.
+     3  Chiplet: integration with a host processor through an agreed interface and packaging process.
+     4  SoC:integrate more of the optical computation with electronic memory and control.
+   Theendgoal
+   Afunctioning photonic processor. Each generation must justify its precision, data movement,
+   integration cost and application.
+   This round establishes the first tile and its scaling evidence. Later generations require additional design work and funding.
+    Photonic NPU | Development proposal | October 2026                                                           11
+   Funding Ask: $750k Pre-Seed
+               15-monthallocation                     USD                  Whatthis round buys
+               People / specialist support           $280k
+               Compute-chip fabrication              $120k                 Acustomcompute-chip prototype, a
+               Packaging / assembly                   $70k                 controlled test system, precision and
+               Electronics / shared lab              $100k                 power measurements, one workload
+               Microcomb / pump / optics access       $50k                 benchmark and outside technical review.
+               Operations / IP                        $30k
+               Contingency reserve                   $100k                 $650kscheduledwork
+               Total                                 $750k                 $100kreserve
+                                                                           Onenewcompute-chiprun;anexisting or
+                                                                           shared soliton source; shared lab
+                                                                           equipment; lean staffing.
+   Next financing milestone: a measured tile, a credible scaled design and a defined customer
+   evaluation.
+   Planning allocation in USD. Supplier quotes are required; the reserve does not guarantee a full respin.
+     Photonic NPU | Development proposal | October 2026                                                                       12
+      Appendix: Define Precision Before Comparing Performance
+       Normalized matrix–vector error
+       For a locked set of input vectors and reference results:
+                                                                                                                                          P ˆ
+                                                                                                                                                  ∥y −Wx∥
+                                                                                                                                                 i       i                  i    2
+                                                                                                                 ϵ                = P                                               .
+                                                                                                                   MVM                                   ∥Wx∥
+                                                                                                                                                       i             i    2
+                    Record input distribution, weight range, signed encoding and calibration method.
+                    Keepweight-programming levels, output numerical error and inference accuracy separate.
+                    Report near-zero-output absolute errors and variation across channels.
+                    If averaging is used, count all repeated measurements in latency and energy.
+       Theworking 5% MVMand1percentage-point task targets are independent checks; neither implies a particular effective bit
+       precision.
+          Photonic NPU | Development proposal | October 2026                                                                                                                                                                                                                            13
+  Appendix: Measure the Complete Computation
+      Digital vector buffer to digital result buffer, with converter and receiver costs included.
+      Measure total electrical draw; separate pump, tuning, conversion, readout and control
+      contributions.
+      Report host transfer time separately, then include it in the application comparison.
+      State weight-update time, input/output rate, calibration duty and operating conditions.
+  Arithmetic throughput is only one metric
+  For an N-input, M-output tile at r vectors/s:
+  NMr MAC/s, or 2NMr operations/s when one MAC counts as two operations.
+  An8×8tileatahypothetical 1 Gvector/s gives 0.128 TOPS gross. This does not specify
+  precision, total power or application speed.
+  Model larger arrays using measured loss, noise, tuning and electrical overhead; do not extrapolate from passive optical
+  arithmetic alone.
+   Photonic NPU | Development proposal | October 2026                              14
+   Appendix: Process and Integration Choices
+        Source: prefer an accessible SiN soliton source with a measured spectrum and power budget.
+        Compute: aqualified SOI process with modulators, detectors, filters and test structures.
+        Packaging: source and compute dies can remain separate in Gen 1; coupling loss and
+        thermal conditions enter the error budget.
+        Weights: tunable elements first. Nonvolatile phase-change weights are a later option if
+        programming, precision and endurance justify them.
+        Alternatives: assess AlGaAs or other platforms when a validated process and team access
+        offer an actual advantage.
+   Therepository’s generic-PDK ring and retina layouts are historical experiments. A foundry-ready compute layout has not
+   been established.
+   Source: Example silicon-photonics platform; exact access and device suitability require foundry confirmation
+    Photonic NPU | Development proposal | October 2026                                                           15
+  Appendix: Fabrication-Cost Sensitivity
+                     Fabrication only  Total with reserve Gapabove$750k
+                               $100k               $730k                 $0
+                          $120k base               $750k                 $0
+                               $200k               $830k               $80k
+                               $300k               $930k              $180k
+   Other scheduled work stays at $530k; packaging is already a separate $70k allowance within that
+   amount. The protected reserve remains $100k.
+   Before committing to tapeout
+   Confirm foundry, packaging, source and test-equipment scope. If quotations exceed the allocation,
+   revise scope or raise additional capital.
+   Sensitivity assumptions, not quotations. A second custom chip, dedicated laboratory or full respin requires a separate
+   budget.
+   Photonic NPU | Development proposal | October 2026                                      16
+  Appendix: Longer-Term Research
+  Topological representations for learning
+  Thefounder’s earlier work motivates experiments with topological descriptors. Current protein
+  experiments do not establish an exact photonic E or homotopy-group engine.
+                                 2
+     Exact algebra: identify a specific operation and show how a physical circuit performs it
+     correctly.
+     Hopfions: investigate an encoding and useful operation only after defining input, manipulation
+     andreadout.
+     Photonic retina: a possible later application of the processor, with a separate sensing and
+     preprocessing architecture.
+  Thesedirections motivate later research. The first NPU experiment is judged by arithmetic, task performance and
+  complete-system cost.
+   Photonic NPU | Development proposal | October 2026          17
+  Appendix: Evidence and Inputs to Complete
+      Feldmann et al., Nature (2021): soliton-microcomb tensor core.
+      Meyer et al., Nature Communications (2026): reconfigurable tensor processor.
+      Huaetal., Nature (2025): photonic–electronic accelerator.
+      Zhouetal., Nature Communications (2023): programmable photonic weight memory.
+  Company-specific inputs
+  Technical-lead commitment; task and evaluator; loss/noise model; foundry and packaging quotes; source and
+  lab access; measured prototype results; and ownership of the implementation.
+  Publications establish prior art. Company performance, customer demand and future sales remain to be established.
+   Photonic NPU | Development proposal | October 2026                         18

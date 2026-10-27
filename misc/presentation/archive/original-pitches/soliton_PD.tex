@@ -1,0 +1,447 @@
+\documentclass{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{amsmath}
+
+% Beamer theme
+\usetheme{Madrid}
+\usecolortheme{default}
+
+% Title Information
+\title[Soliton Microcombs]{Soliton Microcombs}
+\subtitle{for Scalable Optical Interconnects}
+\author{Pavel Chekmaryov}
+\institute{\href{mailto:p@occurai.com}{p@occurai.com}}
+\date{\today}
+
+\begin{document}
+
+% --- Title Slide ---
+\begin{frame}
+    \titlepage
+    \begin{center}
+        \vspace{0.5cm}
+        \small Replacing laser arrays with single-chip frequency combs.
+    \end{center}
+\end{frame}
+
+% --- Slide 2: The Problem ---
+\begin{frame}
+    \frametitle{The Interconnect Scaling Wall}
+
+    \begin{alertblock}{Current Bottleneck: Laser Arrays Don't Scale}
+        \textbf{Electrical interconnects are hitting their limits:}
+        \begin{itemize}
+            \item \textbf{Power:} $\sim$50\% of chip power is for data movement.
+            \item \textbf{Bandwidth:} Limited by RC delays and crosstalk.
+            \item \textbf{Heat:} I²R losses generate massive heat.
+        \end{itemize}
+    \end{alertblock}
+
+    \begin{block}{Optical Solution Exists, BUT...}
+        Current laser-array-based optical interconnects face scaling challenges.
+        \begin{itemize}
+            \item \textbf{Cost:} 64 wavelengths = 64 lasers = \$3,200--\$6,400.
+            \item \textbf{Size:} $\sim$1000 mm².
+            \item \textbf{Power:} 10-20W.
+            \item \textbf{Scalability:} Impractical beyond 32 wavelengths.
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+% --- Slide 3: The Solution ---
+\begin{frame}[fragile]
+    \frametitle{Our Solution: Dissipative Kerr Soliton Frequency Combs}
+    
+    \begin{block}{One Chip Replaces 100 Lasers}
+        \begin{columns}[T]
+            \begin{column}{0.5\textwidth}
+                \textbf{\alert{Current (64$\lambda$)}:}
+                \begin{itemize}
+                    \item 64 Discrete Lasers
+                    \item 64 Fibers/Waveguides
+                    \item Massive packaging complexity
+                    \item Complex control required for each laser (power, temp, locking).
+                    \item \textbf{Cost: \$3,200--\$6,400}
+                \end{itemize}
+            \end{column}
+            \begin{column}{0.5\textwidth}
+                \textbf{\textcolor{green}{With Soliton Comb (100$\lambda$)}:}
+                \begin{itemize}
+                    \item 1 Pump Laser
+                    \item 1 Soliton Microcomb
+                    \item Minimal packaging
+                    \item Simplified system control with auto-locking wavelengths.
+                    \item \textbf{Cost: \$1,000--\$3,000}
+                \end{itemize}
+            \end{column}
+        \end{columns}
+    \end{block}
+
+    \begin{exampleblock}{How It Works}
+        A CW laser pumps a microresonator, where nonlinearity creates a stable soliton pulse, which in turn generates a 50-100+ wavelength frequency comb.
+    \end{exampleblock}
+\end{frame}
+
+% --- Slide 4: What is a Frequency Comb ---
+\begin{frame}
+    \frametitle{What is a Frequency Comb?}
+    
+    \begin{block}{A light source with many equally-spaced optical frequencies}
+        A frequency comb is like a ruler made of light, where each mark is a perfectly spaced, phase-coherent laser line.
+    \end{block}
+    
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \begin{alertblock}{Traditional Combs}
+                \begin{itemize}
+                    \item Room-sized or benchtop
+                    \item Expensive (\$50K--\$500K)
+                    \item Power hungry
+                \end{itemize}
+            \end{alertblock}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{block}{Soliton Microcombs}
+                \begin{itemize}
+                    \item Chip-scale (mm²)
+                    \item Low cost (\$500--\$2K)
+                    \item Low power (mW)
+                    \item CMOS-compatible
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% --- Slide 5: Why CW Pumping is Revolutionary ---
+\begin{frame}
+    \frametitle{Why CW Pumping is Revolutionary}
+    
+    \begin{block}{Key Advantage: Continuous Wave Input $\rightarrow$ Pulsed Output}
+        You pump the microresonator with a simple, steady CW laser, and due to nonlinear physics, you automatically get a train of stable pulses out.
+    \end{block}
+    
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \begin{alertblock}{Old Paradigm}
+                To get pulses, you needed a complex, bulky, and expensive mode-locked laser.
+            \end{alertblock}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{block}{New Paradigm}
+                A simple CW laser plus a micro-chip creates the pulses automatically. This is the key to making combs compact, cheap, and power-efficient.
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% --- Slide 6: Performance Comparison ---
+\begin{frame}
+    \frametitle{Performance Comparison (Target Metrics)}
+    \resizebox{\textwidth}{!}{
+    \begin{tabular}{l c c c}
+        \toprule
+        \textbf{Metric} & \textbf{Laser Array (16-32$\lambda$)} & \textbf{Soliton Comb (100$\lambda$)} & \textbf{Improvement} \\
+        \midrule
+        Cost & \$2k--\$5k & \textbf{\$1k--\$3k} & \textbf{2-3x} \\
+        Power & 5 - 10W & \textbf{1W} & \textbf{5-10x} \\
+        Size & 1000 mm² & \textbf{5 mm²} & \textbf{200x} \\
+        Wavelengths & 16 - 32 & \textbf{100+} & \textbf{3-6x} \\
+        Bandwidth & 0.5 - 1 Tbps & \textbf{2.5 - 5 Tbps} & \textbf{5x} \\
+        Scalability & Limited & \textbf{Excellent} & \textbf{Game-changing} \\
+        \bottomrule Metrics based on simulations, prototypes, and published benchmarks \\
+    \end{tabular}
+    }
+    
+    \vspace{1cm}
+    
+    \begin{alertblock}{Cost per Wavelength: >10x Reduction}
+        \begin{itemize}
+            \item Laser Array (16$\lambda$): \$125 / wavelength
+            \item Soliton Comb (100$\lambda$): \textbf{\$10 / wavelength}
+        \end{itemize}
+    \end{alertblock}
+\end{frame}
+
+% --- Slide 7: Integration Architecture ---
+\begin{frame}
+    \frametitle{System Integration: Drop-in Replacement}
+    
+    \begin{block}{Flexible Integration with Leading Chiplet Platforms}
+        Our Soliton Comb module is a drop-in replacement for the laser array.
+        \begin{itemize}
+            \item A single CW Pump Laser feeds our Soliton Microcomb chip.
+            \item The comb's 100+ wavelengths are then fed into the existing modulators, filters, and detectors on the host chiplet (e.g., Ayar Labs TeraPHY, Lightmatter).
+            \item Minimal changes to the existing architecture.
+        \end{itemize}
+    \end{block}
+    
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \begin{alertblock}{What Changes}
+                \begin{itemize}
+                    \item \textbf{Remove:} 16-64 discrete lasers and their complex control electronics.
+                    \item \textbf{Add:} Single pump laser + microcomb chip.
+                \end{itemize}
+            \end{alertblock}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{block}{What Stays the Same}
+                \begin{itemize}
+                    \item All modulators
+                    \item All filters and routing
+                    \item All detectors
+                    \item Chip packaging
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% --- Slide 8: Market Opportunity ---
+\begin{frame}
+    \frametitle{Market Opportunity: Massive and Growing}
+    
+    \begin{block}{\$2B+ Addressable Market by 2030}
+        The total optical interconnect market is projected to be \$10B by 2030. Our target is the light source segment, which is $\sim$20\% of that.
+    \end{block}
+    
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \textbf{Market Segments:}
+            \begin{itemize}
+                \item Hyperscale Datacenters
+                \item AI/HPC Systems
+                \item Telecom Edge
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \textbf{Revenue Model (Year 5):}
+            \begin{itemize}
+                \item Sell Price: \$3k--\$5k
+                \item Gross Margin: 60-70\%
+                \item Units: 10,000/year
+                \item \textbf{Revenue: \$30--50M}
+            \end{itemize}
+        \end{column}
+    \end{columns}
+    
+    \begin{exampleblock}{Why Now?}
+        The market is hitting the scaling wall just as the technology has matured enough for productization. Gen 3 products (2026-2028) will need 50-100 wavelengths.
+    \end{exampleblock}
+\end{frame}
+
+% --- Slide 9: Competition ---
+\begin{frame}
+    \frametitle{Current Players \& Our Competitive Edge}
+    
+    \begin{tabular}{l c c c}
+        \toprule
+        \textbf{Feature} & \textbf{Laser Array} & \textbf{High-End Comb} & \textbf{Our Comb} \\
+        \midrule
+        Cost & \$2K & \$15K & \textbf{\$3--5K} \\
+        Size & cm² & Benchtop & \textbf{mm²} \\
+        Power & 5W & 2W & \textbf{1W} \\
+        Target & Interconnects & Lab/Test & \textbf{Interconnects} \\
+        \bottomrule
+    \end{tabular}
+    
+    \begin{block}{Our Competitive Advantages}
+        \begin{itemize}
+            \item \textbf{Optimized for interconnects:} Wavelength grid matches standards.
+            \item \textbf{Packaged for Si-photonics:} Direct waveguide coupling.
+            \item \textbf{Sweet-spot pricing:} Drastically lower cost per wavelength (e.g., \$10 vs \$125), and far cheaper than lab combs.
+            \item \textbf{Volume manufacturing focus:} Designed for volume from day 1.
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+% --- Slide 10: Technical Challenges \& Solutions ---
+\begin{frame}
+    \frametitle{Technical Challenges \& Our Solutions}
+    
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \begin{alertblock}{Challenge 1: Soliton Stabilization}
+                Solitons are metastable and sensitive to thermal drift.
+            \end{alertblock}
+            \textbf{Solution:} Automated stabilization using feedback control with a single PID feedback loop and auto-locking algorithm.
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{alertblock}{Challenge 2: Pump Laser Integration}
+                The pump laser is a different material (III-V) than the Si chip.
+            \end{alertblock}
+            \textbf{Solution:} Hybrid approach. External laser for Gen 1, heterogeneous integration (bonding) for Gen 2.
+        \end{column}
+    \end{columns}
+    
+    \begin{alertblock}{Challenge 3: Manufacturing Variability}
+        Dispersion engineering requires precision; not all chips will work perfectly.
+    \end{alertblock}
+    \textbf{Solution:} Robust designs with wide operating ranges, post-fabrication tuning, and partnership with proven foundries.
+\end{frame}
+
+% --- Slide 11: Go-to-Market Strategy ---
+\begin{frame}
+    \frametitle{Go-to-Market Strategy: Phased Approach}
+    
+    \begin{itemize}
+        \item \textbf{Phase 1 (Months 1-12): Prototype} \\
+        Build working module, hit key specs (50$\lambda$, stable), demo to customers.
+        \item \textbf{Phase 2 (Months 12-18): Pilot Customer Validation} \\
+        Pilot with lead customers (e.g., Ayar Labs), iterate based on feedback.
+        \item \textbf{Phase 3 (Months 18-30): Productization} \\
+        Design for manufacturing, setup volume production, first commercial orders.
+        \item \textbf{Phase 4 (Years 3-5): Scale} \\
+        Volume shipments, expand customer base, build or exit.
+    \end{itemize}
+    
+    \begin{block}{Exit Strategy: Acquisition}
+        Most likely exit is acquisition in years 3-5 by a strategic buyer like Ayar, Lightmatter, Intel, Cisco, or Broadcom for vertical integration. Valuation target: \$50--200M.
+    \end{block}
+\end{frame}
+
+% --- Slide 12: Long-Term Vision ---
+\begin{frame}
+    \frametitle{Long-Term Vision}
+    
+    \begin{block}{Photonic Motherboard (5-8 Years)}
+        \textit{Long-term scientific vision (not part of current raise).}
+        \begin{itemize}
+            \item Expand the photonic fabric to replace major inter-chip communication (CPU-GPU-RAM).
+            \item \textit{R\&D Focus: Mature \textbf{on-chip light sources} for multi-chip integration.}
+        \end{itemize}
+    \end{block}
+
+    \begin{alertblock}{Ultimate Vision: Fibration Computer (8+ Years)}
+        Merge all computation into a unified \textbf{Hopf fibration structure}, where microresonators act as the "fibers" of the system.
+    \end{alertblock}
+\end{frame}
+
+% --- Slide 13: Timeline \& Milestones ---
+\begin{frame}
+    \frametitle{18-Month Development Roadmap}
+    
+    \begin{itemize}
+        \item \textbf{Months 1-6:} Chip Design \& Fabrication
+        \item \textbf{Months 7-9:} System Integration, Packaging \& First Soliton
+        \item \textbf{Months 10-12:} Optimization \& Turnkey Operation Demo
+        \item \textbf{Months 13-18:} Customer Validation, Data Transmission Demo, \& Initiate Early Volume Prep
+    \end{itemize}
+    
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \begin{exampleblock}{Key Technical Milestones}
+                \begin{itemize}
+                    \item[M6:] First Soliton
+                    \item[M9:] 50+ Wavelengths
+                    \item[M12:] Turnkey Operation
+                    \item[M15:] >1 Tbps Data Demo
+                \end{itemize}
+            \end{exampleblock}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{block}{Key Business Milestones}
+                \begin{itemize}
+                    \item[M3:] Close \$750k Pre-Seed Funding
+                    \item[M12:] Customer MOU
+                    \item[M18:] Raise \$10M Seed
+                    \item[M24:] First Revenue
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% --- Slide 14: Funding Ask ---
+\begin{frame}
+    \frametitle{Funding Requirements: Seeking \$750k Pre-Seed Round}
+    
+    \begin{block}{Use of Funds (18 months)}
+        \begin{itemize}
+            \item \textbf{Chip Fabrication, Packaging, \& Materials:} \$250K (33\%)
+            \item \textbf{Team (1-2 people):} \$250K (33\%)
+            \item \textbf{Equipment \& Lab Setup:} \$150K (20\%)
+            \item \textbf{Operations \& Other:} \$100K (13\%)
+        \end{itemize}
+    \end{block}
+    
+    \begin{exampleblock}{Milestones Achievable with \$750k}
+        \begin{itemize}
+            \item Working prototype (50+ wavelengths, stable)
+            \item Customer validation with 1-2 lead customers
+            \item Data transmission demo
+            \item De-risked sufficiently for \$10M Seed raise
+        \end{itemize}
+    \end{exampleblock}
+\end{frame}
+% --- Slide 15: Team \& Why Us ---
+\begin{frame}
+    \frametitle{Team \& Why We'll Succeed}
+    
+    \begin{columns}[T]
+        \begin{column}{0.6\textwidth}
+            \textbf{Pavel Chekmaryov — Founder \& CEO}
+            \begin{itemize}
+                \item Experience in hardware/software, including quantum hardware startups (Snowcap Compute).
+                \item Background in technical recruitment, startup operations, product development, and growth.
+            \end{itemize}
+
+            \textbf{Scientific Advisors}
+            \begin{itemize}
+                \item \textbf{Anton Velichko (U. Sheffield):} Expertise in semiconductor optics, AlGaAs, and fabrication-aware design.
+            \end{itemize}
+        \end{column}
+        
+        \begin{column}{0.4\textwidth}
+            \begin{exampleblock}{Why We'll Win}
+                \begin{itemize}
+                    \item \textbf{Timing:} Market needs our solution now.
+                    \item \textbf{Expertise:} Strong academic and application-relevant expertise.
+                    \item \textbf{Customer-Driven:} Building for lead partners.
+                    \item \textbf{Scalable:} Designed for volume manufacturing.
+                \end{itemize}
+            \end{exampleblock}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.2cm}
+    \centering
+    \small\textit{Seeking technical co-founders and domain experts.}
+\end{frame}
+% --- Slide 16: Summary ---
+\begin{frame}
+    \frametitle{Investment Summary}
+    
+    \begin{block}{The Opportunity}
+        Chip interconnects are hitting a scaling wall. Soliton microcombs solve this by enabling 100+ wavelengths at a fraction of the cost, power, and size of current solutions.
+    \end{block}
+    
+    \begin{columns}[T]
+        \begin{column}{0.5\textwidth}
+            \begin{alertblock}{The Ask: \$750k Pre-Seed}
+                For an 18-month runway to a working prototype and customer validation.
+            \end{alertblock}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{exampleblock}{The Market: \$500M--2B}
+                Our TAM for light sources in the optical interconnect market by 2030.
+            \end{exampleblock}
+        \end{column}
+    \end{columns}
+    
+    \begin{block}{The Exit: \$50--200M}
+        Likely acquisition in 3-5 years by strategic buyers like Intel, Cisco, NVIDIA.
+    \end{block}
+    
+    \begin{center}
+        \vspace{0.5cm}
+        \textbf{Let's build the future of chip interconnects.}
+    \end{center}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,396 @@
+{
+  "date": "2026-10-26",
+  "note": "Reversible organization only; hashes verify every moved file. Python simulation and layout entry points were not moved.",
+  "moves": [
+    {
+      "from": "misc/presentation/README.md",
+      "to": "misc/presentation/archive/2026-10-06-source-and-retina/README.md",
+      "sha256": "04194e8bcaf766301ff87457aafd1655a46296a295d9e43b3fb8d9574597cc5e"
+    },
+    {
+      "from": "misc/presentation/financial_model.py",
+      "to": "misc/presentation/archive/2026-10-06-source-and-retina/financial_model.py",
+      "sha256": "6bebcf3b47ddd9f8b8f3da2e3af4026ae335c69c02a1fd57171449a7dae42d7f"
+    },
+    {
+      "from": "misc/presentation/interconnect_application_assessment.md",
+      "to": "misc/presentation/archive/2026-10-06-source-and-retina/interconnect_application_assessment.md",
+      "sha256": "000ab8edaf52453aa250c25df9ed3ca5ea2ca06b53ac6d4b24713e96bebbce8c"
+    },
+    {
+      "from": "misc/presentation/investor_returns.csv",
+      "to": "misc/presentation/archive/2026-10-06-source-and-retina/investor_returns.csv",
+      "sha256": "427d667f2e74d348159e34a6779a39f0a0a9d15258a95d4b247ddb43be470317"
+    },
+    {
+      "from": "misc/presentation/photonic_retina_mask_assessment.md",
+      "to": "misc/presentation/archive/2026-10-06-source-and-retina/photonic_retina_mask_assessment.md",
+      "sha256": "2a3f00156ce2e333f995ff30d18ff7c20f83e3e448e86cb8db0d967aeebdce08"
+    },
+    {
+      "from": "misc/presentation/photonic_retina_product_brief.md",
+      "to": "misc/presentation/archive/2026-10-06-source-and-retina/photonic_retina_product_brief.md",
+      "sha256": "e2c3f789c998fe77b33194e069fc74daa8c3466b2f4bddac9ddb36a3c7d90019"
+    },
+    {
+      "from": "misc/presentation/preseed_monthly_budget.csv",
+      "to": "misc/presentation/archive/2026-10-06-source-and-retina/preseed_monthly_budget.csv",
+      "sha256": "4e04dd52391839f5ce64769f62749ef1aa8a82f44a8bd9343258a289521d9d72"
+    },
+    {
+      "from": "misc/presentation/projection_scenarios.csv",
+      "to": "misc/presentation/archive/2026-10-06-source-and-retina/projection_scenarios.csv",
+      "sha256": "984f1b7f1c46dea096004d217de9227cb56170a3aefa289376de2cdba813b0a4"
+    },
+    {
+      "from": "misc/presentation/soliton_diligence_appendix.md",
+      "to": "misc/presentation/archive/2026-10-06-source-and-retina/soliton_diligence_appendix.md",
+      "sha256": "a4925cc58907e8d9f5061950c5302d38813e9af6f2dde6b2addb28b9be4be673"
+    },
+    {
+      "from": "misc/presentation/soliton_microcomb_application_options.md",
+      "to": "misc/presentation/archive/2026-10-06-source-and-retina/soliton_microcomb_application_options.md",
+      "sha256": "65c4d4252a6d3ce83f78e95a3f3f628c7150e79b3a7bb2c34a0281dfc27800f5"
+    },
+    {
+      "from": "misc/presentation/soliton_one_pager.aux",
+      "to": "misc/presentation/archive/2026-10-06-source-and-retina/soliton_one_pager.aux",
+      "sha256": "09272726b6bcd93175bf0c45298a936362d70ab34e0bd87798585dcd7b0363fe"
+    },
+    {
+      "from": "misc/presentation/soliton_one_pager.log",
+      "to": "misc/presentation/archive/2026-10-06-source-and-retina/soliton_one_pager.log",
+      "sha256": "0975934fec9c16c96f44885767f25c710511a6050f2c31a6d247edb2a3de6d03"
+    },
+    {
+      "from": "misc/presentation/soliton_one_pager.out",
+      "to": "misc/presentation/archive/2026-10-06-source-and-retina/soliton_one_pager.out",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "from": "misc/presentation/soliton_one_pager.pdf",
+      "to": "misc/presentation/archive/2026-10-06-source-and-retina/soliton_one_pager.pdf",
+      "sha256": "56bc546b35cff49c1a603e111f96421986ee48a575c287a68d1229decc13ad7d"
+    },
+    {
+      "from": "misc/presentation/soliton_one_pager.tex",
+      "to": "misc/presentation/archive/2026-10-06-source-and-retina/soliton_one_pager.tex",
+      "sha256": "421539aeaf65aeac26719666453c1060932d567dc2edc3e9a227564f224a2046"
+    },
+    {
+      "from": "misc/presentation/soliton_one_pager.txt",
+      "to": "misc/presentation/archive/2026-10-06-source-and-retina/soliton_one_pager.txt",
+      "sha256": "61a75a8a5eaf6e0687daed16ec12a8c6e76410c5de395d479dd55485315a2c21"
+    },
+    {
+      "from": "misc/presentation/soliton_preseed.aux",
+      "to": "misc/presentation/archive/2026-10-06-source-and-retina/soliton_preseed.aux",
+      "sha256": "262bea2fbeeffbffe9fd2a36d9af11b89a2725e67bb4fbdb4c147ffe916a81e5"
+    },
+    {
+      "from": "misc/presentation/soliton_preseed.log",
+      "to": "misc/presentation/archive/2026-10-06-source-and-retina/soliton_preseed.log",
+      "sha256": "63225326f29467e29fad415e0e8a5c58e39fe53b8b63e803a35f928647af4584"
+    },
+    {
+      "from": "misc/presentation/soliton_preseed.nav",
+      "to": "misc/presentation/archive/2026-10-06-source-and-retina/soliton_preseed.nav",
+      "sha256": "8ef215778e79e0710a94982546642dfd151922ac3d8fd39988f03189d7cdaea0"
+    },
+    {
+      "from": "misc/presentation/soliton_preseed.out",
+      "to": "misc/presentation/archive/2026-10-06-source-and-retina/soliton_preseed.out",
+      "sha256": "4f1cee79282b18f1020e6eda819d19e2506f112e0339fd91134082d899715d13"
+    },
+    {
+      "from": "misc/presentation/soliton_preseed.pdf",
+      "to": "misc/presentation/archive/2026-10-06-source-and-retina/soliton_preseed.pdf",
+      "sha256": "760223580e363a5be35b7d8a23f61cd6e9f75e8b91d45d47de6812df87ec6266"
+    },
+    {
+      "from": "misc/presentation/soliton_preseed.snm",
+      "to": "misc/presentation/archive/2026-10-06-source-and-retina/soliton_preseed.snm",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "from": "misc/presentation/soliton_preseed.tex",
+      "to": "misc/presentation/archive/2026-10-06-source-and-retina/soliton_preseed.tex",
+      "sha256": "d7ef1ab145721725dbeae418e0cf9c53155cec49caed73838d5871cd62a14137"
+    },
+    {
+      "from": "misc/presentation/soliton_preseed.toc",
+      "to": "misc/presentation/archive/2026-10-06-source-and-retina/soliton_preseed.toc",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "from": "misc/ONE_PAGER.txt",
+      "to": "misc/presentation/archive/original-pitches/ONE_PAGER.txt",
+      "sha256": "5406219a9980741a3fbed0d7e7d11a66ca55c18c324496ca4b114ec34477b780"
+    },
+    {
+      "from": "misc/PITCH_DECK.md",
+      "to": "misc/presentation/archive/original-pitches/PITCH_DECK.md",
+      "sha256": "cb82c9a419df34e16a9b712fd509627bdcbdaf576c7b907cdbcd254f33d27403"
+    },
+    {
+      "from": "misc/PITCH_DECK.tex",
+      "to": "misc/presentation/archive/original-pitches/PITCH_DECK.tex",
+      "sha256": "d2add94d1d8fa7f8b2279a325105083409716adaba3affbbef7de12d789bb7ec"
+    },
+    {
+      "from": "misc/PITCH_DECK.pdf",
+      "to": "misc/presentation/archive/original-pitches/PITCH_DECK.pdf",
+      "sha256": "be83690de94c453f7d8a302fb8e9868436c76712d61b5ff31693369259458e0e"
+    },
+    {
+      "from": "misc/soliton_PD.tex",
+      "to": "misc/presentation/archive/original-pitches/soliton_PD.tex",
+      "sha256": "c454d64e1bc748836c18ed8dd6f918539803454c2bc649af6f9aaac5e5873735"
+    },
+    {
+      "from": "misc/soliton_PD.pdf",
+      "to": "misc/presentation/archive/original-pitches/soliton_PD.pdf",
+      "sha256": "4abf68d82eb2b1bb643c3d815927ccbad726c6e586837f0734bcf5f91d249ed5"
+    },
+    {
+      "from": "misc/soliton_PD_Appendix.txt",
+      "to": "misc/presentation/archive/original-pitches/soliton_PD_Appendix.txt",
+      "sha256": "41ff5febdc5282460c3e459a2775026279f9a1f113e49654db4635837e88108e"
+    },
+    {
+      "from": "misc/PITCH_DECK.aux",
+      "to": "misc/presentation/archive/original-pitches/build/PITCH_DECK.aux",
+      "sha256": "c610dccc97adb9aee2c3eab7faba4d51a9ebbd34b649835431db741c0beed8d8"
+    },
+    {
+      "from": "misc/PITCH_DECK.log",
+      "to": "misc/presentation/archive/original-pitches/build/PITCH_DECK.log",
+      "sha256": "ecfcfc338be87a378f600b33298e70de3564a176a87ce465324060f80ea40a78"
+    },
+    {
+      "from": "misc/PITCH_DECK.nav",
+      "to": "misc/presentation/archive/original-pitches/build/PITCH_DECK.nav",
+      "sha256": "e56dd6a47c641ccc502659ade4b0333668e8553c9b21b4c67bd4bd7f6fc25b43"
+    },
+    {
+      "from": "misc/PITCH_DECK.out",
+      "to": "misc/presentation/archive/original-pitches/build/PITCH_DECK.out",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "from": "misc/PITCH_DECK.snm",
+      "to": "misc/presentation/archive/original-pitches/build/PITCH_DECK.snm",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "from": "misc/PITCH_DECK.toc",
+      "to": "misc/presentation/archive/original-pitches/build/PITCH_DECK.toc",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "from": "misc/PITCH_DECK.vrb",
+      "to": "misc/presentation/archive/original-pitches/build/PITCH_DECK.vrb",
+      "sha256": "0c366fe7a045f0986c86513a8ace3cfd276566a469ac7d77a3010cb70c84e010"
+    },
+    {
+      "from": "misc/soliton_PD.aux",
+      "to": "misc/presentation/archive/original-pitches/build/soliton_PD.aux",
+      "sha256": "c38ad2880f76f1c58004eeaf40c8503d5d089ed1d0cea1edf2bd46228857e029"
+    },
+    {
+      "from": "misc/soliton_PD.log",
+      "to": "misc/presentation/archive/original-pitches/build/soliton_PD.log",
+      "sha256": "6353fade05c0cd8863680686eec90528309719fafb4843495fbdc7f8456d0f8a"
+    },
+    {
+      "from": "misc/soliton_PD.nav",
+      "to": "misc/presentation/archive/original-pitches/build/soliton_PD.nav",
+      "sha256": "2aeee3fe5adbab9905de1376cac90e0d94cfbbfde8dc7c385b62fe488eea0c85"
+    },
+    {
+      "from": "misc/soliton_PD.out",
+      "to": "misc/presentation/archive/original-pitches/build/soliton_PD.out",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "from": "misc/soliton_PD.snm",
+      "to": "misc/presentation/archive/original-pitches/build/soliton_PD.snm",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "from": "misc/soliton_PD.toc",
+      "to": "misc/presentation/archive/original-pitches/build/soliton_PD.toc",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "from": "misc/soliton_PD.vrb",
+      "to": "misc/presentation/archive/original-pitches/build/soliton_PD.vrb",
+      "sha256": "13e63c59d646bd467feb3424c7446fefa439e6b78bedbf72509da191a28ee92a"
+    },
+    {
+      "from": "misc/soliton_PD_financial_model.py",
+      "to": "misc/presentation/archive/original-review/soliton_PD_financial_model.py",
+      "sha256": "3a479ccc9aba5f4882a1e5e7c80ee6769ba0fe725d687899069ba3b4ff702758"
+    },
+    {
+      "from": "misc/soliton_PD_investor_returns.csv",
+      "to": "misc/presentation/archive/original-review/soliton_PD_investor_returns.csv",
+      "sha256": "427d667f2e74d348159e34a6779a39f0a0a9d15258a95d4b247ddb43be470317"
+    },
+    {
+      "from": "misc/soliton_PD_projection_scenarios.csv",
+      "to": "misc/presentation/archive/original-review/soliton_PD_projection_scenarios.csv",
+      "sha256": "60d284b6c3fe42a02bd1516a4c327e46f30eee735da621e40c424c43bfb7e152"
+    },
+    {
+      "from": "misc/soliton_PD_review.md",
+      "to": "misc/presentation/archive/original-review/soliton_PD_review.md",
+      "sha256": "4e3c10f5ea5d1393d91cfff797af636d02f774c464f5aa5f698263cd2195c5bc"
+    },
+    {
+      "from": "misc/texput.log",
+      "to": "misc/presentation/archive/original-pitches/build/texput.log",
+      "sha256": "e0c1d46fdf5081394b02560c036f5990e5dba9f67a92fb04773aad54cc6d4f8c"
+    },
+    {
+      "from": "2406.06096v1.pdf",
+      "to": "references/papers/2406.06096v1.pdf",
+      "sha256": "cad025e9f46b65adb213fe0bf22bafeffa8c116a8cb0e2c4f3561a7206e02a11"
+    },
+    {
+      "from": "2504.03981v1.pdf",
+      "to": "references/papers/2504.03981v1.pdf",
+      "sha256": "a6b09cc2c90df52471641a746fd221751ac9db0232133c7b11f8202767e1e0fe"
+    },
+    {
+      "from": "PRXQuantum.6.010338_AlGaAs.pdf",
+      "to": "references/papers/PRXQuantum.6.010338_AlGaAs.pdf",
+      "sha256": "d865f050f6303ea70ffcf99a140d02bcb5e5dcdfa045d83620988696966c4c9c"
+    },
+    {
+      "from": "final_soliton_propagation.gif",
+      "to": "results/legacy-root/final_soliton_propagation.gif",
+      "sha256": "a560dee9cb889a4210b92af4c9bf64640558731eaffeab8a99068a035e5a9788"
+    },
+    {
+      "from": "hopf_soliton_propagation.gif",
+      "to": "results/legacy-root/hopf_soliton_propagation.gif",
+      "sha256": "cfcaa59300b76ded68e8707f9bd7dcf344f43032694c051d836ed95ee65f80d1"
+    },
+    {
+      "from": "hopfion_3d_propagation.gif",
+      "to": "results/legacy-root/hopfion_3d_propagation.gif",
+      "sha256": "92e5e187a3b30d7b0378ece702d126600b2e8c7bca7c687c0fc831c58e67c7c7"
+    },
+    {
+      "from": "hopfion_P1.10e+16_GS128_N200_R1.0_S1.0.png",
+      "to": "results/legacy-root/hopfion_P1.10e+16_GS128_N200_R1.0_S1.0.png",
+      "sha256": "316281c81c45f3abf5d3c70da93f8403d61ad8eb9d7ccf23c5501e60bac92b63"
+    },
+    {
+      "from": "hopfion_P1.37e+16_GS128_N200_R1.0_S1.0.png",
+      "to": "results/legacy-root/hopfion_P1.37e+16_GS128_N200_R1.0_S1.0.png",
+      "sha256": "298dcf29c79b2a89c6b955350d0699b57cc24be99c645bc844ac6b8318609011"
+    },
+    {
+      "from": "hopfion_P3.00e+04_GS128_N200_R1.0_S1.0.png",
+      "to": "results/legacy-root/hopfion_P3.00e+04_GS128_N200_R1.0_S1.0.png",
+      "sha256": "7fb5c4e43fcb2527f178537a191c2ae87772348c474ee4add52b362e6b9dc693"
+    },
+    {
+      "from": "hopfion_P6.87e+14_GS128_N200_R1.0_S1.0.png",
+      "to": "results/legacy-root/hopfion_P6.87e+14_GS128_N200_R1.0_S1.0.png",
+      "sha256": "cafbb7789541cd5cfcc7bb8c67a496083f0aa2a91167d3e4f9d90b2337bc1fef"
+    },
+    {
+      "from": "hopfion_P8.01e+15_GS128_N200_R1.0_S1.0.png",
+      "to": "results/legacy-root/hopfion_P8.01e+15_GS128_N200_R1.0_S1.0.png",
+      "sha256": "723ed6850cb4f0fa23b04cdfbf760c1d74b9638685d6bf4b4c97202ba009e9a7"
+    },
+    {
+      "from": "hopfion_P9.00e+03_GS128_N200_R1.0_S1.0.png",
+      "to": "results/legacy-root/hopfion_P9.00e+03_GS128_N200_R1.0_S1.0.png",
+      "sha256": "e7812a69d8c7fb0e155546de278f55f400b345e8ec4eb6ffd48cb97e183ffbf5"
+    },
+    {
+      "from": "hopfion_P9.00e+15_GS128_N200_R1.0_S1.0.png",
+      "to": "results/legacy-root/hopfion_P9.00e+15_GS128_N200_R1.0_S1.0.png",
+      "sha256": "334fdf5f0f3524a0a6ec9287153c5988086054d2caf69f6416074691c1facc62"
+    },
+    {
+      "from": "hopfion_interaction.gif",
+      "to": "results/legacy-root/hopfion_interaction.gif",
+      "sha256": "c112ed5f055b17f882c0e9c7a8f6217d3f815eb0b3b255ca898c95135c62738c"
+    },
+    {
+      "from": "hopfion_interaction_P5.00e+15_GS128_N400_Sep5.0_V5.0.png",
+      "to": "results/legacy-root/hopfion_interaction_P5.00e+15_GS128_N400_Sep5.0_V5.0.png",
+      "sha256": "ae013016987316ac6a14f4ce944e8a2aca734e8c0565d2aa795ef10140a2da0f"
+    },
+    {
+      "from": "hopfion_interaction_P5.00e+15_GS128_N400_Sep5.0_V5.0_Ph1.57.gif",
+      "to": "results/legacy-root/hopfion_interaction_P5.00e+15_GS128_N400_Sep5.0_V5.0_Ph1.57.gif",
+      "sha256": "12fd0bf644ebacb5c60e3ed598f3c11eda8149b52133aaeb99cb2d7ba378741a"
+    },
+    {
+      "from": "hopfion_interaction_topology_P5.00e+15_GS128_N200_Sep5.0_V5.0_Ph0.00.gif",
+      "to": "results/legacy-root/hopfion_interaction_topology_P5.00e+15_GS128_N200_Sep5.0_V5.0_Ph0.00.gif",
+      "sha256": "48d24b76a9603c999fd1ff54a8630aab1dd8437cf0990995d1efb1684680fb0d"
+    },
+    {
+      "from": "soliton_and_gate_0_and_0.gif",
+      "to": "results/legacy-root/soliton_and_gate_0_and_0.gif",
+      "sha256": "c74b34b52a0bc403d4b16a452e83cfbb20cbb93b7cc775207ccbb85d4dbe21ae"
+    },
+    {
+      "from": "soliton_and_gate_1_and_0.gif",
+      "to": "results/legacy-root/soliton_and_gate_1_and_0.gif",
+      "sha256": "1563ee8fff3846e60c274b1863f0e2dab52e235d3a71c8ef5d29f768b18867aa"
+    },
+    {
+      "from": "soliton_gate_collision.gif",
+      "to": "results/legacy-root/soliton_gate_collision.gif",
+      "sha256": "57fd7569bfabb4cd3a67dd2261446ca6d877aac2ef9cf2307b3ca8d3ab0935ab"
+    },
+    {
+      "from": "time_evolution_20251220-113410.gif",
+      "to": "results/legacy-root/time_evolution_20251220-113410.gif",
+      "sha256": "c116b9a3fad991e7c43ea26112ace00c8411efecc5df5095e07d767b3fd9e0d5"
+    },
+    {
+      "from": "time_evolution_20251220-131426.gif",
+      "to": "results/legacy-root/time_evolution_20251220-131426.gif",
+      "sha256": "d3f26749cb9d58ca1a2634f585a5d25850ac7a4738fae3117d9ef1e49ae91107"
+    },
+    {
+      "from": "time_evolution_20251220-182948.gif",
+      "to": "results/legacy-root/time_evolution_20251220-182948.gif",
+      "sha256": "f87d6ee2da34de2982048e9b999127c3d91926bb5764a1feb9af86a18511b3c6"
+    },
+    {
+      "from": "time_evolution_20251220-183452.gif",
+      "to": "results/legacy-root/time_evolution_20251220-183452.gif",
+      "sha256": "f87d6ee2da34de2982048e9b999127c3d91926bb5764a1feb9af86a18511b3c6"
+    },
+    {
+      "from": "time_evolution_20251220-222344.gif",
+      "to": "results/legacy-root/time_evolution_20251220-222344.gif",
+      "sha256": "fc9de9bfb91ba603773ec84800d1d5d37d600af513a4b1376ba9f596c235c72a"
+    },
+    {
+      "from": "time_evolution_20251220-222806.gif",
+      "to": "results/legacy-root/time_evolution_20251220-222806.gif",
+      "sha256": "ca8562da1187515852f79e1b30b65a927164c71c669e9e1959ad0ef17d054527"
+    },
+    {
+      "from": "time_evolution_20251220-223037.gif",
+      "to": "results/legacy-root/time_evolution_20251220-223037.gif",
+      "sha256": "38a0ad5c608c3b594600cc277b4b363585f8b6849e6f2fba755b93778ecd49a2"
+    },
+    {
+      "from": "vector_hopfion_propagation.gif",
+      "to": "results/legacy-root/vector_hopfion_propagation.gif",
+      "sha256": "84f143c15c96502ae4ed13bd0d31b72fc7c9956b3b548589553a0506eb789d42"
+    }
+  ]
+}

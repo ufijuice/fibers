@@ -1,0 +1,278 @@
+\documentclass{beamer}
+
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+\usetheme{Madrid}
+
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault}
+
+% --- Title Information ---
+\title[Fibers of Light]{Fibers of Light: Optical Interconnects for Energy-Efficient Computing \\
+\normalsize Ultra-low-power photonics, with a path toward topological architectures}
+\author{Pavel Chekmaryov}
+\date{\today}
+
+\begin{document}\footnotesize
+
+
+% --- Title Slide ---
+\begin{frame}
+    \titlepage
+    \begin{center}
+        \vspace{1cm}
+    \large Seed Overview \\
+    \normalsize \href{mailto:p@occurai.com}{p@occurai.com} \\
+    \normalsize \url{https://www.linkedin.com/in/ufijuice/}
+    \newline
+
+    \end{center}
+\end{frame}
+
+% --- Slide 2: The Problem ---
+\begin{frame}
+    \frametitle{The Problem: Scaling Limits of Conventional Computing}
+    \begin{itemize}
+        \item \textbf{Bandwidth bottlenecks:} Data movement increasingly dominates system-level performance.
+        \item \textbf{Energy constraints:} Performance scaling is limited by power consumption, with a large fraction of energy spent on interconnects.
+        \footnote{Estimates suggest up to $\sim$40\% of datacenter power is spent on data movement.}
+    \end{itemize}
+\end{frame}
+
+% --- Slide 3: The Solution ---
+\begin{frame}
+    \frametitle{The Solution: Photonic Interconnects as a Computing Substrate}
+
+    \begin{block}{Our Approach}
+        By leveraging nonlinear optical effects, we investigate regimes where localized optical modes can be used for structured signal propagation and processing.
+    \end{block}
+
+    \begin{block}{Core Technologies}
+        \begin{itemize}
+            \item \textbf{Near-term:} Soliton-based photonic interconnects for high-bandwidth, energy-efficient data movement.
+            \item \textbf{Long-term:} Novel topological photonic states (e.g.\ Hopfions) as a foundation for robust, physics-enabled computation.
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+% --- Slide 4: How It Works ---
+\begin{frame}[fragile]
+    \frametitle{How It Works: Physical Function and Implementation}
+
+    \textbf{1. Nonlinear Optical Function}
+        Our approach relies on controlled nonlinear interactions between optical signals.
+    \begin{center}
+    {\tiny
+    \begin{verbatim}
+      Laser A --\
+                 >---[Coupler]-->[Nonlinear Region]--> Output
+      Laser B --/         ^
+                          |
+                    [Phase Control]
+    \end{verbatim}
+    }
+    \end{center}
+
+    \vspace{0.4cm}
+
+    \textbf{2. Photonic Chip Architecture}
+        These nonlinear functions are embedded in a scalable silicon photonics platform
+        based on networks of micro-ring resonators.
+    \begin{center}
+    {\tiny
+    \begin{verbatim}
+                                 +---[Heater]---+
+                                 |       / \    |
+  Input --[Waveguide]-->[Coupler]--+----O   O---+--[Coupler]--> Output
+                                 |       \ /    |
+                                 +---[Heater]---+
+                                       ...
+    \end{verbatim}
+    }
+    \end{center}
+
+    \small
+    \textit{Configuration elements (e.g.\ heaters) are used for tuning and routing, not computation.}
+\end{frame}
+
+
+% --- Slide 5: Application 1 (Solitons) ---
+\begin{frame}
+    \frametitle{Application 1 (Near-Term): Soliton-Based Interconnects}
+
+    \begin{itemize}
+        \item \textbf{Physical basis:} Optical solitons are stable pulses arising from a balance between dispersion and nonlinearity, allowing information to propagate with reduced distortion over distance.
+        
+        \item \textbf{Proposed product:} An on-chip and chip-to-chip photonic interconnect optimized for low-latency, high-bandwidth communication between processor cores and accelerators.
+        
+        \item \textbf{Expected impact:} By reducing signal distortion and repeater overhead, soliton-based links target lower energy per bit, reduced latency, and higher bandwidth density compared to conventional electrical interconnects.
+    \end{itemize}
+\end{frame}
+% --- Slide 6: Topological Photonic Computing ---
+\begin{frame}
+    \frametitle{Exploratory R\&D: Topological Photonic Computing}
+    \begin{itemize}
+        \item \textbf{The Concept:} A \alert{Hopfion} is a stable, topological structure of light. Information can be stored in its robust, complex state.
+        \item \textbf{The Platform:} A research setup to explore non-binary photonic computation and develop an analog module for specialized calculations.
+        \item \textbf{The Potential:} Moves beyond binary systems to multi-level, analog computation. Useful for modeling complex real-world phenomena and supports \alert{Reservoir Computing}.
+    \end{itemize}
+\end{frame}
+
+% --- Slide 7: Strategic Advantage ---
+\begin{frame}
+    \frametitle{Our Strategic Advantage}
+    \begin{itemize}
+        \item \textbf{Technology Readiness:} Starting with mature Silicon Nitride (SiN) prototypes, with a clear path to high-performance AlGaAs devices.
+        \item \textbf{Validated Physics:} Simulations confirm the underlying models, providing a solid foundation for hardware. \textit{(Simulations are not the same as fabrication.)}
+        \item \textbf{Phased Roadmap:} Step-by-step approach delivers near-term results while progressing toward new computing paradigms.
+        \item \textbf{Platform Versatility:} Supports multiple computational paradigms, including Hopfions and Reservoir Computing, on the same hardware.
+    \end{itemize}
+\end{frame}
+
+% --- Slide 8: Phased Roadmap ---
+\begin{frame}[allowframebreaks]
+    \frametitle{Phased Roadmap \& Integrated R\&D}
+
+    \begin{block}{Phase 1: Soliton Accelerator (0-2 Years)}
+        \begin{itemize}
+            \item Deliver a working \textbf{Soliton Accelerator} for inter-core communication.
+            \item Publish performance benchmarks compared to electrical interconnects.
+            \item \textit{R\&D Focus: Begin integration of \textbf{on-chip light sources} (optional but high-value).}
+        \end{itemize}
+    \end{block}
+
+    \begin{block}{Phase 2: Hopfion Compute Module (2-5 Years)}
+        \textit{Conditional on successful completion of Phase 1.}
+        \begin{itemize}
+            \item Demonstrate stable creation and control of single \textbf{Hopfions}.
+            \item Develop the first integrated \textbf{Hopfion Compute Module}.
+        \end{itemize}
+    \end{block}
+
+    \framebreak
+
+    \begin{block}{Phase 3: Photonic Motherboard (5-8 Years)}
+        \textit{Long-term scientific vision (not part of current raise).}
+        \begin{itemize}
+            \item Expand the photonic fabric to replace major inter-chip communication (CPU-GPU-RAM).
+            \item \textit{R\&D Focus: Mature \textbf{on-chip light sources} for multi-chip integration.}
+        \end{itemize}
+    \end{block}
+
+    \begin{alertblock}{Ultimate Vision: Fibration Computer (8+ Years)}
+        Merge all computation into a unified \textbf{Hopf fibration structure}, where microresonators act as the "fibers" of the system.
+    \end{alertblock}
+
+\end{frame}
+
+% --- Slide 9: The Ask ---
+\begin{frame}
+    \frametitle{The Ask}
+    We are raising a \textbf{$2,000,000 Seed round} to achieve key milestones over the next 18 months:
+    \begin{itemize}
+        \item \textbf{Team:} Hire 1-2 photonic engineers and secure key advisors.
+        \item \textbf{Lab \& PoC:} Set up a lab and build the first physical Proof-of-Concept device to validate simulations.
+        \item \textbf{Fabrication:} Complete at least two design-and-fabrication cycles for the Soliton Accelerator chip.
+        \item \textbf{Runway:} Provide ~18 months of runway to demonstrate hardware feasibility and prepare for a larger seed round.
+    \end{itemize}
+\end{frame}
+
+% --- Slide 10: Founder \& Advisors ---
+\begin{frame}
+    \frametitle{Founder \& Advisors}
+
+    \begin{block}{Pavel Chekmaryov — Founder \& CEO}
+        \begin{itemize}
+            \item Experience in both hardware and software development.
+            \item Worked at \textbf{Snowcap Compute}, a quantum hardware startup.
+            \item Background in technical recruitment and early-stage startup operations.
+            \item Hands-on experience with product development and startup growth.
+        \end{itemize}
+    \end{block}
+
+    \begin{block}{Scientific Advisors}
+        \begin{itemize}
+            \item \textbf{Anton Velichko (University of Sheffield)} — semiconductor optics and spectroscopy, with focus on material realism and experimental feasibility.
+            \item Expertise in \textbf{AlGaAs} and semiconductor physics.
+            \item Guidance on fabrication constraints and theory–experiment alignment.
+        \end{itemize}
+    \end{block}
+
+    \begin{block}{Team Expansion}
+        \small\textit{Exploring collaborations with technical co-founders and domain experts as the project develops.}
+    \end{block}
+
+\end{frame}
+
+% --- Slide 11: Competitive Landscape ---
+\begin{frame}
+    \frametitle{Competitive Landscape}
+    Our strategy bridges near-term interconnect improvements and long-term novel computing.
+
+    \centering
+    \resizebox{0.9\textwidth}{!}{
+    \begin{tabular}{|l|p{5cm}|p{5cm}|}
+        \hline
+        \textbf{Category} & \textbf{Existing Players / Paradigm} & \textbf{New Approach / Vision} \\
+        \hline
+        Core Computing & \begin{itemize}
+            \item Nvidia (GPUs)
+            \item Google (TPUs)
+        \end{itemize} & \begin{itemize}
+            \item \textbf{Hopfion Architecture} (Analog, early-stage)
+            \item PsiQuantum, Xanadu (Quantum)
+        \end{itemize} \\
+        \hline
+        Interconnects & \begin{itemize}
+            \item Electrical Interconnects
+            \item Ayar Labs, Lightmatter (optical interconnect competitors)
+        \end{itemize} & \begin{itemize}
+            \item \textbf{Soliton Accelerator} (our technology)
+        \end{itemize} \\
+        \hline
+    \end{tabular}
+    }
+
+    \vspace{0.5cm}
+    \begin{alertblock}{}
+        We begin by advancing interconnects with our \textbf{Soliton Accelerator}, then use this platform to enable a new computing paradigm with the \textbf{Hopfion Architecture}.
+    \end{alertblock}
+\end{frame}
+
+% --- Slide 12: Market Opportunity ---
+\begin{frame}
+    \frametitle{Market Opportunity}
+    Addressing bottlenecks in two fast-growing technology markets.
+
+    \begin{block}{Target Market 1: Data Center \& HPC Interconnects}
+        \begin{itemize}
+            \item Optical interconnect market projected to exceed \textbf{\$27B by 2027}.
+            \item Data movement consumes a large portion of data center energy—our \textbf{Soliton Accelerator} addresses this.
+            \item \textbf{Initial Customers:} Hyperscalers with high-performance, energy-efficient interconnect needs.
+        \end{itemize}
+    \end{block}
+
+    \begin{block}{Target Market 2: Next-Generation Computing Hardware}
+        \begin{itemize}
+            \item AI hardware market projected at \textbf{\$150B+ by 2027}.
+            \item Positions us to capture part of the post-GPU computing paradigm.
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+% --- Final Slide ---
+\begin{frame}
+    \frametitle{Thank You}
+    \begin{center}
+        \Huge Thank You
+        \vspace{1cm}
+
+        \Large Pavel Chekmaryov \\
+        \normalsize \href{mailto:p@occurai.com}{p@occurai.com} \\
+        \normalsize \url{https://www.linkedin.com/in/ufijuice/}
+    \end{center}
+\end{frame}
+
+\end{document}

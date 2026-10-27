@@ -1,0 +1,36 @@
+\frametitle{How It Works: Physical Function and Implementation}
+
+    \textbf{1. Nonlinear Optical Function}
+        Our approach relies on controlled nonlinear interactions between optical signals.
+    \begin{center}
+    {\tiny
+    \begin{verbatim}
+      Laser A --\
+                 >---[Coupler]-->[Nonlinear Region]--> Output
+      Laser B --/         ^
+                          |
+                    [Phase Control]
+    \end{verbatim}
+    }
+    \end{center}
+
+    \vspace{0.4cm}
+
+    \textbf{2. Photonic Chip Architecture}
+        These nonlinear functions are embedded in a scalable silicon photonics platform
+        based on networks of micro-ring resonators.
+    \begin{center}
+    {\tiny
+    \begin{verbatim}
+                                 +---[Heater]---+
+                                 |       / \    |
+  Input --[Waveguide]-->[Coupler]--+----O   O---+--[Coupler]--> Output
+                                 |       \ /    |
+                                 +---[Heater]---+
+                                       ...
+    \end{verbatim}
+    }
+    \end{center}
+
+    \small
+    \textit{Configuration elements (e.g.\ heaters) are used for tuning and routing, not computation.}

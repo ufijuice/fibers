@@ -1,0 +1,47 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=.62in]{geometry}
+\usepackage{helvet,xcolor,booktabs,hyperref}
+\renewcommand{\familydefault}{\sfdefault}
+\definecolor{ink}{HTML}{142C43}
+\definecolor{accent}{HTML}{007F86}
+\hypersetup{colorlinks=true,urlcolor=accent}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\newcommand{\labelled}[1]{\textbf{\color{accent}#1}\quad}
+\input{budget_values.tex}
+\begin{document}
+\raggedright
+{\LARGE\bfseries\color{ink} A Modular Photonic NPU}\\[3pt]
+{\large Programmable optical computation with electronic control}\\
+Pavel Chekmaryov\quad|\quad\href{mailto:p@occurai.com}{p@occurai.com}\quad|\quad October 2026
+
+\labelled{The product}
+We are developing a photonic neural processing unit. A soliton microcomb supplies parallel optical carriers; a programmable optical core multiplies input vectors by a weight matrix. Electronics handles memory, converters, calibration and nonlinear activations. The first chip we will fabricate is an \(8\times8\) compute tile, using an existing or shared source and external test electronics.
+
+\labelled{First workload}
+Repeated dense projections in a small inference model, with weights reused across a continuous input stream. Prospective users are hardware teams building real-time sensing and control systems. The initial phase selects one task and a relevant electronic baseline with a potential evaluator.
+
+\labelled{The design hypothesis}
+Readout and calibration improvements could provide useful inference accuracy in one pass, reducing the need for repeated measurements. We will compare complete-system latency and energy at matched task accuracy. The basic microcomb compute architecture already has research precedent; the implementation must demonstrate a specific improvement.
+
+\labelled{What this round establishes}
+Proposed first targets are \(\leq5\%\) normalized single-pass matrix--vector error and \(\leq1\) percentage-point accuracy loss against the same digital model on a locked task. We will also measure power, latency, stability and weight-update costs. These targets will be reviewed against the noise model and quotes before fabrication. An \(8\times8\) tile establishes feasibility and scaling evidence.
+
+\labelled{The raise}
+\textbf{\FundingAsk{} pre-seed for a 15-month feasibility program.}
+\begin{center}
+\small
+\input{budget_table.tex}
+\end{center}
+The base scope covers one compute-chip fabrication, existing or shared source access, shared facilities and lean staffing. Core work is \CoreBudget{}; \ReserveBudget{} remains reserve. Higher fabrication quotes or a full respin require a scope or financing change.
+
+\labelled{Execution and next product}
+Pavel's background includes Snowcap Compute and exploratory work on topological machine learning, nonlinear optics and layouts. We are seeking a technical co-founder or photonics engineer with hands-on design and test experience. After the tile: a useful compute module, then chiplet and SoC integration when supported by performance and customer demand.
+
+{\footnotesize\color{accent} Development-stage proposal. Measured NPU performance, customer commitments, supplier pricing and an implementation advantage remain to be established. All amounts USD; no source-module revenue or exit forecast is carried into this plan.}
+
+{\scriptsize Research context: \href{https://www.nature.com/articles/s41586-020-03070-1}{Feldmann et al. (2021)}; \href{https://www.nature.com/articles/s41467-026-71599-2}{Meyer et al. (2026)}; \href{https://www.nature.com/articles/s41586-025-08786-6}{Hua et al. (2025)}.}
+\end{document}

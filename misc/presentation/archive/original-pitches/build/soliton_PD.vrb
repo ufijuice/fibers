@@ -1,0 +1,30 @@
+\frametitle{Our Solution: Dissipative Kerr Soliton Frequency Combs}
+
+    \begin{block}{One Chip Replaces 100 Lasers}
+        \begin{columns}[T]
+            \begin{column}{0.5\textwidth}
+                \textbf{\alert{Current (64$\lambda$)}:}
+                \begin{itemize}
+                    \item 64 Discrete Lasers
+                    \item 64 Fibers/Waveguides
+                    \item Massive packaging complexity
+                    \item Complex control required for each laser (power, temp, locking).
+                    \item \textbf{Cost: \$3,200--\$6,400}
+                \end{itemize}
+            \end{column}
+            \begin{column}{0.5\textwidth}
+                \textbf{\textcolor{green}{With Soliton Comb (100$\lambda$)}:}
+                \begin{itemize}
+                    \item 1 Pump Laser
+                    \item 1 Soliton Microcomb
+                    \item Minimal packaging
+                    \item Simplified system control with auto-locking wavelengths.
+                    \item \textbf{Cost: \$1,000--\$3,000}
+                \end{itemize}
+            \end{column}
+        \end{columns}
+    \end{block}
+
+    \begin{exampleblock}{How It Works}
+        A CW laser pumps a microresonator, where nonlinearity creates a stable soliton pulse, which in turn generates a 50-100+ wavelength frequency comb.
+    \end{exampleblock}

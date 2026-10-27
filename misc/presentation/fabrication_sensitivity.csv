@@ -1,0 +1,5 @@
+fabrication_only_usd,scheduled_core_usd,protected_reserve_usd,total_funding_with_reserve_usd,working_ask_usd,additional_funding_to_keep_reserve_usd,cash_left_from_working_ask_before_contingency_usd
+100000,630000,100000,730000,750000,0,120000
+120000,650000,100000,750000,750000,0,100000
+200000,730000,100000,830000,750000,80000,20000
+300000,830000,100000,930000,750000,180000,-80000

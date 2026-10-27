@@ -1,0 +1,54 @@
+\documentclass[10pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=0.65in]{geometry}
+\usepackage{helvet,xcolor,booktabs,hyperref,enumitem}
+\renewcommand{\familydefault}{\sfdefault}
+\definecolor{ink}{HTML}{142C43}
+\definecolor{accent}{HTML}{007F86}
+\hypersetup{colorlinks=true,urlcolor=accent}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt}
+\newcommand{\labelled}[1]{\textbf{\color{accent}#1}\quad}
+\begin{document}
+\raggedright
+{\LARGE\bfseries\color{ink} Soliton Microcombs}\\[3pt]
+{\large Multi-wavelength light sources for optical interconnects}\\
+Pavel Chekmaryov\quad |\quad\href{mailto:p@occurai.com}{p@occurai.com}\quad |\quad October 2026
+
+\labelled{The opportunity}
+Optical interconnects need several stable wavelengths of light. We are developing a module that uses one pump laser and a microcomb chip to generate many wavelengths. The goal is to reduce light-source cost and power while meeting the customer's requirements.
+
+\labelled{The first product}
+Gen 1 combines an external pump, a microresonator chip, filters, and control electronics. Our first target is 16 usable wavelengths at the required spacing and output power. We then aim for 32--50 wavelengths if the optical power and customer requirements allow it.
+
+\labelled{Why this can win}
+We will compare our module with existing multi-wavelength sources, including Ayar SuperNova and Lightmatter Guide. We aim for lower cost, reliable automatic operation, repeatable manufacturing, and compatibility with customer systems. The improvement must be measured.
+
+\labelled{Current stage}
+The work starts from chip design and simulations. This presentation does not claim measured module performance or signed customer orders. The next steps are fabrication and lab quotes, requirements from potential customers, and a technical co-founder or photonics engineer.
+
+\labelled{Commercial plan}
+We plan to sell packaged modules, starting with paid test samples in Year 2 and production after customer approval. The Year 5 base case is 2,500 modules at \$3,500 each: \$8.75M revenue. Target manufacturing cost is \$1,575/module, giving 55\% gross margin. Slower and faster sales cases give \$1.75M and \$24.5M in Year 5. These are planning assumptions, not orders.
+
+\labelled{The raise}\textbf{\$750k pre-seed for a 15-month feasibility program.}
+\begin{center}
+\begin{tabular}{lr@{\hspace{18pt}}lr}
+\toprule
+People / specialists & \$250k & Fabrication / packaging & \$220k\\
+Lab / test access & \$100k & Operations / IP & \$65k\\
+Contingency & \$115k & \textbf{Total} & \textbf{\$750k}\\
+\bottomrule
+\end{tabular}
+\end{center}
+This funds a working lab prototype, automatic control, measured output and power, a manufacturing cost estimate, and outside testing. It assumes a small team and shared lab equipment. Later funding supports customer approval and initial production; the base-case plan allows roughly \$9--12M in total funding, including this round.
+
+\labelled{Execution}
+Pavel Chekmaryov brings hardware/software experience, including Snowcap Compute, technical recruitment, startup operations, and product development. The current materials name Anton Velichko (University of Sheffield) for scientific guidance; his engagement and public attribution need confirmation. We are looking for a technical co-founder or photonics engineer with hands-on chip, packaging, and optical-testing experience.
+
+\labelled{Long-term direction}
+A photonic retina could combine a detector array with photonic processing to extract features close to the sensor. The first experiment would detect a simple pattern and compare accuracy, power, and sensing-to-result time with an electronic setup. Hopfion computing remains a longer-term research direction. Both need separate experiments and funding; neither contributes revenue to this plan.
+
+{\scriptsize All amounts USD. Years start at financing close. Sources: \href{https://ayarlabs.com/supernova}{Ayar SuperNova}; \href{https://lightmatter.co/wp-content/uploads/2025/08/57-lightmatter_hotchips_2025_final.pdf}{Lightmatter, Hot Chips 2025}. Detailed assumptions and research references accompany the deck.}
+\end{document}

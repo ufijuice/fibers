@@ -1,51 +1,57 @@
 # Photonic computing research
 
-This workspace contains exploratory photonic simulations and the current proposal for a **modular photonic NPU**: programmable optical computation supported by electronic memory and control.
+Exploratory Python simulations of optical solitons, Hopfion-inspired fields and photonic structures.
 
-## Current presentation
+## Research scope
 
-Start with [the presentation index](misc/presentation/README.md).
+The scripts explore nonlinear optical propagation, pulse interactions, polarization textures and resonator-array spectra. They use simplified physical and geometric models for numerical experiments and visualization.
 
-- [Pitch deck](misc/presentation/photonic_npu_preseed.pdf)
-- [One-page overview](misc/presentation/photonic_npu_one_pager.pdf)
-- [Technical and funding assumptions](misc/presentation/photonic_npu_diligence.md)
-- [Editable feasibility budget](misc/presentation/preseed_budget.py)
+## Repository contents
 
-The proposed first device is an 8×8 matrix–vector compute tile using a soliton microcomb as its source. Numerical precision, complete-system power, a useful workload and a competitive advantage remain to be established. The existing simulation and generic-PDK layout examples are research preparation; they are not a measured NPU or a foundry-qualified implementation.
-
-The working ask is $750k for a 15-month feasibility program. Earlier light-source and retina pitches and their sales models are [archived](misc/presentation/archive/README.md); their forecasts do not apply to the NPU.
-
-## Repository map
-
-| Location | Purpose |
+| File | Purpose |
 |---|---|
-| misc/presentation/ | Current deck, one-pager, diligence, budget, build script and outreach draft |
-| misc/presentation/archive/ | Earlier pitches and analyses, preserved locally with a movement manifest |
-| misc/ | Earlier generic-PDK microcomb/retina layout experiments |
-| references/ | Paper index and local PDF copies |
-| docs/simulations.md | Existing simulation scripts, setup and usage |
-| results/ | Generated output; older root figures are in results/legacy-root/ |
+| [soliton.py](soliton.py) | Nonlinear pulse propagation, collisions, logic-gate experiments and temporal profiles |
+| [hopfion.py](hopfion.py) | Initial field construction and simplified vector propagation for single-field and interaction experiments |
+| [run_experiments.py](run_experiments.py) | Multiprocessing driver for soliton parameter sweeps, configured within the script |
+| [recreated_hopf_soliton.py](recreated_hopf_soliton.py) | Optical field and polarization visualization inspired by Hopf-soliton research |
+| [recreated_hopfion_crystal.py](recreated_hopfion_crystal.py) | Rational-map model and visualization of Hopfion lattice textures |
+| [recreated_algaas_chip.py](recreated_algaas_chip.py) | Simplified AlGaAs resonator-array spectra and joint spectral intensity |
+| [calculate_algaas_params.py](calculate_algaas_params.py) | Estimates for AlGaAs soliton simulation parameters |
 
-Core simulation entry points retain their paths: soliton.py, hopfion.py, run_experiments.py and the recreated_* scripts. The NPU program does not depend on proving the longer-term Hopfion-computing idea.
+## Setup
 
-## Build the presentation
+Requires Python 3. Create a virtual environment and install the [dependencies](requirements.txt):
 
-Requires Python 3 and a working pdflatex installation:
+```bash
+python3 -m venv venv
+source venv/bin/activate
+python -m pip install -r requirements.txt
+```
 
-    python3 misc/presentation/build.py
-
-The build regenerates the numerical budget, compiles the two PDFs and keeps LaTeX intermediates in misc/presentation/build/. It does not install packages.
+On Windows Command Prompt, activate the environment with `venv\Scripts\activate`.
 
 ## Run the simulations
 
-Create or activate an environment and install the [simulation requirements](requirements.txt):
+View available commands and their options:
 
-    python3 -m venv venv
-    source venv/bin/activate
-    python -m pip install -r requirements.txt
-    python soliton.py --help
-    python hopfion.py --help
+```bash
+python soliton.py --help
+python soliton.py run collision --help
+python hopfion.py --help
+python hopfion.py run single --help
+```
 
-See [simulation notes](docs/simulations.md) for examples and limitations. Layout experiments need additional dependencies described in [misc/README.md](misc/README.md).
+For small example runs:
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidance.
+```bash
+python soliton.py run collision --grid-size 32 --num-steps 20 --output-dir results/soliton-example
+python hopfion.py run single --grid-size 32 --num-steps 20 --output-dir results/hopfion-example
+```
+
+Simulation data and generated figures are saved under `results/` by default. Use `--output-dir` to keep experiments separate. Resolution, material parameters and propagation settings need to be chosen for the experiment being studied.
+
+For parameter sweeps, review `MODE`, `MATERIAL_CONFIGS` and `GRIDS` in [run_experiments.py](run_experiments.py) before launching a batch.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidance and the [contributor agreement](CLA.md).
